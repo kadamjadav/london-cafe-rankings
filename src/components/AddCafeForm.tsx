@@ -33,11 +33,11 @@ export default function AddCafeForm() {
     return existing.filter((c) => norm(c.name).includes(n) || n.includes(norm(c.name))).slice(0, 3);
   }, [name, existing]);
 
-  if (!supabase) return <p className="text-sm text-stone-500">Community features aren&apos;t switched on yet.</p>;
-  if (loading) return <p className="text-sm text-stone-500">Loading…</p>;
+  if (!supabase) return <p className="text-sm text-ink-soft">Community features aren&apos;t switched on yet.</p>;
+  if (loading) return <p className="text-sm text-ink-soft">Loading…</p>;
   if (!user)
     return (
-      <p className="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
+      <p className="rounded-md bg-porcelain p-4 text-sm text-ink">
         Sign in (top right) to add a café. It&apos;s free and only needs your email.
       </p>
     );
@@ -89,11 +89,11 @@ export default function AddCafeForm() {
           onChange={(e) => setName(e.target.value)}
           maxLength={80}
           placeholder="e.g. Prufrock Coffee"
-          className="mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 font-normal"
+          className="mt-1 w-full rounded border border-rule bg-porcelain px-3 py-2 font-normal"
         />
       </label>
       {similar.length > 0 && (
-        <div className="rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+        <div className="rounded-md border border-rule bg-porcelain p-3 text-sm text-ink">
           Already on the site? {""}
           {similar.map((c, i) => (
             <span key={c.slug}>
@@ -112,37 +112,37 @@ export default function AddCafeForm() {
           onChange={(e) => setArea(e.target.value)}
           maxLength={40}
           placeholder="e.g. Farringdon"
-          className="mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 font-normal"
+          className="mt-1 w-full rounded border border-rule bg-porcelain px-3 py-2 font-normal"
         />
       </label>
       <label className="block text-sm font-medium">
-        Address <span className="font-normal text-stone-400">(optional)</span>
+        Address <span className="font-normal text-ink-soft">(optional)</span>
         <input
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           maxLength={160}
           placeholder="e.g. 23–25 Leather Lane, London EC1N 7TE"
-          className="mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 font-normal"
+          className="mt-1 w-full rounded border border-rule bg-porcelain px-3 py-2 font-normal"
         />
       </label>
       <div>
         <p className="text-sm font-medium">Where is it?</p>
-        <p className="mb-2 text-xs text-stone-500">
+        <p className="mb-2 text-xs text-ink-soft">
           Zoom in and tap the map to drop a pin. Drag it to fine-tune.
-          {spot && <span className="ml-1 font-medium text-amber-800">Pin placed ✓</span>}
+          {spot && <span className="ml-1 font-medium text-awning">Pin placed ✓</span>}
         </p>
         <LocationPickerClient value={spot} onChange={setSpot} />
       </div>
       <div className="flex items-center gap-4">
         <button
           disabled={busy}
-          className="rounded-full bg-stone-900 px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
+          className="btn-primary"
         >
           {busy ? "Adding…" : "Add café"}
         </button>
-        {msg && <p className="text-sm text-red-700">{msg}</p>}
+        {msg && <p className="text-sm text-red-800">{msg}</p>}
       </div>
-      <p className="text-xs text-stone-400">
+      <p className="text-xs text-ink-soft">
         Only add real, public cafés in London. Fake or spam entries are removed. Max 5 a day.
       </p>
     </form>

@@ -45,9 +45,9 @@ export function timeAgo(iso: string) {
 
 export function Stars({ value }: { value: number }) {
   return (
-    <span className="text-amber-600" aria-label={`${value} out of 5`}>
+    <span className="text-brass" aria-label={`${value} out of 5`}>
       {"★".repeat(value)}
-      <span className="text-stone-300">{"★".repeat(5 - value)}</span>
+      <span className="text-ink-soft">{"★".repeat(5 - value)}</span>
     </span>
   );
 }
@@ -81,7 +81,7 @@ export default function Community({ cafeSlug }: { cafeSlug: string }) {
       .eq("cafe_slug", cafeSlug)
       .order("created_at", { ascending: false })
       .then(({ data, error }) => {
-        if (error) setError(error.message);
+        if (error) setError("Reviews couldn't load. Check your connection and refresh the page.");
         else setReviews((data as unknown as Review[]) ?? []);
         setLoading(false);
       });
@@ -100,7 +100,7 @@ export default function Community({ cafeSlug }: { cafeSlug: string }) {
 
   if (!supabase) {
     return (
-      <section className="rounded-2xl border border-dashed border-stone-300 p-6 text-sm text-stone-500">
+      <section className="rounded-md border border-dashed border-rule p-6 text-sm text-ink-soft">
         Community reviews aren&apos;t switched on yet. (Site owner: add your Supabase keys — see the README.)
       </section>
     );
@@ -112,9 +112,9 @@ export default function Community({ cafeSlug }: { cafeSlug: string }) {
   return (
     <section>
       <div className="mb-4 flex items-baseline justify-between">
-        <h2 className="text-2xl font-semibold">Community reviews</h2>
+        <h2 className="font-display text-2xl">Reviews</h2>
         {avg !== null && (
-          <p className="text-sm text-stone-500">
+          <p className="text-sm text-ink-soft">
             <Stars value={Math.round(avg)} /> {avg.toFixed(1)} from {reviews.length}{" "}
             {reviews.length === 1 ? "review" : "reviews"}
           </p>
@@ -122,20 +122,20 @@ export default function Community({ cafeSlug }: { cafeSlug: string }) {
       </div>
 
       {!user ? (
-        <p className="mb-6 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
+        <p className="mb-6 rounded-md bg-porcelain p-4 text-sm text-ink">
           Been here? Sign in (top right) to add your own review and photos.
         </p>
       ) : myReview ? (
-        <p className="mb-6 text-sm text-stone-500">You&apos;ve reviewed this café. Delete your review below to write a new one.</p>
+        <p className="mb-6 text-sm text-ink-soft">You&apos;ve reviewed this café. Delete your review below to write a new one.</p>
       ) : (
         <ReviewForm cafeSlug={cafeSlug} userId={user.id} onPosted={load} />
       )}
 
-      {error && <p className="mb-4 text-sm text-red-700">{error}</p>}
+      {error && <p className="mb-4 text-sm text-red-800">{error}</p>}
       {loading ? (
-        <p className="text-sm text-stone-500">Loading reviews…</p>
+        <p className="text-sm text-ink-soft">Loading reviews…</p>
       ) : reviews.length === 0 ? (
-        <p className="text-sm text-stone-500">No community reviews yet — be the first.</p>
+        <p className="text-sm text-ink-soft">No community reviews yet — be the first.</p>
       ) : (
         <ul className="space-y-4">
           {reviews.map((r) => (
@@ -196,7 +196,7 @@ function ReviewForm({ cafeSlug, userId, onPosted }: { cafeSlug: string; userId: 
   }
 
   return (
-    <form onSubmit={submit} className="mb-8 space-y-3 rounded-2xl border border-stone-200 bg-white p-4">
+    <form onSubmit={submit} className="mb-8 space-y-3 rounded-md border border-rule bg-porcelain p-4">
       <div className="flex items-center gap-1" role="radiogroup" aria-label="Your rating">
         {[1, 2, 3, 4, 5].map((n) => (
           <button
@@ -206,7 +206,7 @@ function ReviewForm({ cafeSlug, userId, onPosted }: { cafeSlug: string; userId: 
             aria-label={`${n} star${n > 1 ? "s" : ""}`}
             aria-checked={rating === n}
             role="radio"
-            className={`text-2xl ${n <= rating ? "text-amber-600" : "text-stone-300"}`}
+            className={`text-2xl ${n <= rating ? "text-brass" : "text-ink-soft"}`}
           >
             ★
           </button>
@@ -218,10 +218,10 @@ function ReviewForm({ cafeSlug, userId, onPosted }: { cafeSlug: string; userId: 
         maxLength={2000}
         rows={4}
         placeholder="What did you order? How was it?"
-        className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"
+        className="w-full rounded border border-rule px-3 py-2 text-sm"
       />
       <div className="flex flex-wrap items-center gap-3">
-        <label className="cursor-pointer rounded-lg border border-stone-300 px-3 py-2 text-sm hover:bg-stone-50">
+        <label className="cursor-pointer rounded border border-rule px-3 py-2 text-sm hover:bg-chalk">
           {file ? "Change photo" : "Add a photo"}
           <input
             type="file"
@@ -232,20 +232,20 @@ function ReviewForm({ cafeSlug, userId, onPosted }: { cafeSlug: string; userId: 
         </label>
         {preview && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={preview} alt="Selected photo preview" className="h-14 w-14 rounded-lg object-cover" />
+          <img src={preview} alt="Selected photo preview" className="h-14 w-14 rounded object-cover" />
         )}
         {file && (
-          <button type="button" onClick={() => setFile(null)} className="text-xs text-stone-500 underline">
+          <button type="button" onClick={() => setFile(null)} className="text-xs text-ink-soft underline">
             remove
           </button>
         )}
-        <span className="text-xs text-stone-400">Location data is removed from photos before upload.</span>
+        <span className="text-xs text-ink-soft">Location data is removed from photos before upload.</span>
       </div>
       <div className="flex items-center gap-3">
-        <button disabled={busy} className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">
+        <button disabled={busy} className="btn-primary">
           {busy ? "Posting…" : "Post review"}
         </button>
-        {msg && <p className="text-sm text-red-700">{msg}</p>}
+        {msg && <p className="text-sm text-red-800">{msg}</p>}
       </div>
     </form>
   );
@@ -306,43 +306,43 @@ function ReviewCard({
   }
 
   return (
-    <li className="rounded-2xl border border-stone-200 bg-white p-4">
+    <li className="rounded-md border border-rule bg-porcelain p-4">
       <div className="flex items-baseline justify-between gap-3">
         <PersonLink id={review.user_id} profile={review.profiles} />
-        <p className="text-xs text-stone-400">{timeAgo(review.created_at)}</p>
+        <p className="text-xs text-ink-soft">{timeAgo(review.created_at)}</p>
       </div>
       <div className="mt-1">
         <Stars value={review.rating} />
       </div>
-      <p className="mt-2 whitespace-pre-line text-sm text-stone-700">{review.body}</p>
+      <p className="mt-2 whitespace-pre-line text-sm text-ink">{review.body}</p>
       {review.photo_path && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={photoUrl(review.photo_path)}
           alt={`Photo from ${review.profiles?.display_name ?? "a visitor"}'s review`}
           loading="lazy"
-          className="mt-3 max-h-80 rounded-xl object-cover"
+          className="mt-3 max-h-80 rounded-md object-cover"
         />
       )}
 
       <div className="mt-3 flex flex-wrap items-center gap-4 text-sm">
-        <button onClick={toggleLike} className={liked ? "font-medium text-amber-800" : "text-stone-500 hover:text-stone-800"}>
+        <button onClick={toggleLike} className={liked ? "font-medium text-awning" : "text-ink-soft hover:text-ink"}>
           {liked ? "♥" : "♡"} {review.review_likes.length}
         </button>
-        <span className="text-stone-500">💬 {review.comments.length}</span>
+        <span className="text-ink-soft">💬 {review.comments.length}</span>
         {userId && !isOwner && <ReportButton type="review" id={review.id} />}
         {(isOwner || isAdmin) && (
-          <button onClick={deleteReview} className="text-red-700 hover:underline">
+          <button onClick={deleteReview} className="text-red-800 hover:underline">
             Delete{!isOwner && " (admin)"}
           </button>
         )}
       </div>
-      {msg && <p className="mt-2 text-xs text-red-700">{msg}</p>}
+      {msg && <p className="mt-2 text-xs text-red-800">{msg}</p>}
 
       {/* Comments are always visible (latest few) so visitors can see the conversation without hunting for it. */}
-      <div className="mt-3 space-y-2 border-t border-stone-100 pt-3">
+      <div className="mt-3 space-y-2 border-t border-rule pt-3">
         {comments.length > COMMENTS_PREVIEW && !showAllComments && (
-          <button onClick={() => setShowAllComments(true)} className="text-xs font-medium text-stone-500 hover:text-stone-800">
+          <button onClick={() => setShowAllComments(true)} className="text-xs font-medium text-ink-soft hover:text-ink">
             View all {comments.length} comments
           </button>
         )}
@@ -355,11 +355,11 @@ function ReviewCard({
               <Link href={profileHref(c.user_id)} className="font-medium hover:underline">
                 {c.profiles?.display_name ?? "Someone"}
               </Link>{" "}
-              <span className="whitespace-pre-line text-stone-700">{c.body}</span>
-              <div className="mt-0.5 flex items-center gap-3 text-xs text-stone-400">
+              <span className="whitespace-pre-line text-ink">{c.body}</span>
+              <div className="mt-0.5 flex items-center gap-3 text-xs text-ink-soft">
                 {timeAgo(c.created_at)}
                 {(c.user_id === userId || isAdmin) && (
-                  <button onClick={() => deleteComment(c.id)} className="text-red-700 hover:underline">
+                  <button onClick={() => deleteComment(c.id)} className="text-red-800 hover:underline">
                     delete
                   </button>
                 )}
@@ -375,12 +375,12 @@ function ReviewCard({
               onChange={(e) => setComment(e.target.value)}
               maxLength={1000}
               placeholder={comments.length ? "Reply to this review…" : "Be the first to comment…"}
-              className="min-w-0 flex-1 rounded-lg border border-stone-300 px-3 py-1.5 text-sm"
+              className="min-w-0 flex-1 rounded border border-rule px-3 py-1.5 text-sm"
             />
-            <button className="rounded-lg bg-stone-900 px-3 py-1.5 text-sm text-white">Post</button>
+            <button className="btn-primary py-1.5">Post</button>
           </form>
         ) : (
-          <p className="text-xs text-stone-500">Sign in to join the conversation.</p>
+          <p className="text-xs text-ink-soft">Sign in to join the conversation.</p>
         )}
       </div>
     </li>
@@ -393,7 +393,7 @@ export function ReportButton({ type, id, small }: { type: "review" | "comment" |
   const [reason, setReason] = useState("");
   const [done, setDone] = useState<string | null>(null);
 
-  if (done) return <span className="text-xs text-stone-400">{done}</span>;
+  if (done) return <span className="text-xs text-ink-soft">{done}</span>;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -403,7 +403,7 @@ export function ReportButton({ type, id, small }: { type: "review" | "comment" |
 
   if (!open)
     return (
-      <button onClick={() => setOpen(true)} className={`${small ? "text-xs" : ""} text-stone-400 hover:text-stone-700`}>
+      <button onClick={() => setOpen(true)} className={`${small ? "text-xs" : ""} text-ink-soft hover:text-ink`}>
         Report
       </button>
     );
@@ -418,9 +418,9 @@ export function ReportButton({ type, id, small }: { type: "review" | "comment" |
         maxLength={500}
         required
         placeholder="What's wrong with it?"
-        className="min-w-0 flex-1 rounded-lg border border-stone-300 px-2 py-1 text-xs"
+        className="min-w-0 flex-1 rounded border border-rule px-2 py-1 text-xs"
       />
-      <button className="rounded-lg bg-stone-200 px-2 py-1 text-xs">Send</button>
+      <button className="rounded bg-chalk-deep px-2 py-1 text-xs">Send</button>
     </form>
   );
 }

@@ -4,33 +4,30 @@ import { getRankedCafes } from "@/lib/cafes";
 
 export default function Home() {
   const cafes = getRankedCafes();
-  const top = cafes[0];
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-10">
-      <section className="mb-10 max-w-2xl">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Every London café I&apos;ve been to, ranked.</h1>
-        <p className="mt-4 text-lg text-stone-600">
-          Scored on coffee, food, vibe, value and how laptop-friendly they are. {cafes.length} {cafes.length === 1 ? "café" : "cafés"} so far
-          {top && (
-            <>
-              {" "}
-              — current #1 is <strong>{top.name}</strong>
-            </>
-          )}
-          . Been to one? Add your own review on its page.
-        </p>
-        <p className="mt-3 text-stone-600">
-          Somewhere I haven&apos;t been?{" "}
-          <Link href="/cafes" className="font-medium text-amber-800 underline">
-            Browse community cafés
-          </Link>{" "}
-          or{" "}
-          <Link href="/add-cafe" className="font-medium text-amber-800 underline">
-            add one
-          </Link>{" "}
-          for everyone to review.
-        </p>
+    <main className="mx-auto w-full max-w-6xl px-5 pb-10 pt-14">
+      <section className="mb-14 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-end">
+        <h1 className="font-display text-5xl leading-[1.02] sm:text-7xl">
+          Every London café I&apos;ve been to, ranked.
+        </h1>
+        <div className="space-y-4 text-[1.05rem] leading-relaxed text-ink-soft lg:pb-2">
+          <p>
+            {cafes.length} {cafes.length === 1 ? "café" : "cafés"} so far, each scored out of ten for coffee, food,
+            vibe, value and how easy it is to work from.
+          </p>
+          <p>
+            Been somewhere I haven&apos;t?{" "}
+            <Link href="/add-cafe" className="text-awning underline underline-offset-4 hover:text-awning-deep">
+              Add it
+            </Link>{" "}
+            and anyone can score or review it, or{" "}
+            <Link href="/cafes" className="text-awning underline underline-offset-4 hover:text-awning-deep">
+              browse every café
+            </Link>
+            .
+          </p>
+        </div>
       </section>
 
       <RankingExplorer cafes={cafes} />

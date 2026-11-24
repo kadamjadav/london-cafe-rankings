@@ -262,3 +262,52 @@ create policy "community cafes own insert" on public.community_cafes for insert 
 drop policy if exists "community cafes admin delete" on public.community_cafes;
 create policy "community cafes admin delete" on public.community_cafes for delete to authenticated
   using (public.is_admin());
+
+-- ───────────────────────── Quick ratings ─────────────────────────
+-- Score a café out of 10 per category without writing a review. One rating per person per café;
+-- any category can be left blank, but at least one must be scored.
+create table if not exists public.ratings (
+  cafe_slug text not null check (cafe_slug ~ '^[a-z0-9-]{1,80}$'),
+  user_id uuid not null default auth.uid() references public.profiles (id) on delete cascade,
+  coffee smallint check (coffee between 1 and 10),
+  food smallint check (food between 1 and 10),
+  vibe smallint check (vibe between 1 and 10),
+  value smallint check (value between 1 and 10),
+  laptop smallint check (laptop between 1 and 10),
+  updated_at timestamptz not null default now(),
+  primary key (cafe_slug, user_id),
+  constraint ratings_at_least_one check (coalesce(coffee, food, vibe, value, laptop) is not null)
+);
+
+grant select on public.ratings to anon, authenticated;
+grant insert (cafe_slug, coffee, food, vibe, value, laptop) on public.ratings to authenticated;
+-- cafe_slug is deliberately NOT updatable: a rating can't be moved to another café.
+grant update (coffee, food, vibe, value, laptop, updated_at) on public.ratings to authenticated;
+grant delete on public.ratings to authenticated;
+
+alter table public.ratings enable row level security;
+drop policy if exists "ratings readable" on public.ratings;
+create policy "ratings readable" on public.ratings for select using (true);
+drop policy if exists "ratings own insert" on public.ratings;
+create policy "ratings own insert" on public.ratings for insert to authenticated
+  with check (auth.uid() = user_id);
+drop policy if exists "ratings own update" on public.ratings;
+create policy "ratings own update" on public.ratings for update to authenticated
+  using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "ratings owner or admin delete" on public.ratings;
+create policy "ratings owner or admin delete" on public.ratings for delete to authenticated
+  using (auth.uid() = user_id or public.is_admin());
+
+-- Removing a community café removes its ratings as well as its reviews.
+create or replace function public.delete_cafe_reviews()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  delete from public.reviews where cafe_slug = old.slug;
+  delete from public.ratings where cafe_slug = old.slug;
+  return old;
+end;
+$$;
+revoke execute on function public.delete_cafe_reviews() from public, anon, authenticated;

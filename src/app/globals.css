@@ -1,38 +1,169 @@
 @import "tailwindcss";
+@import "@fontsource-variable/bodoni-moda/opsz.css";
+@import "@fontsource-variable/bodoni-moda/opsz-italic.css";
+@import "@fontsource-variable/hanken-grotesk/index.css";
 
+/*
+ * Design: a London café shopfront and its menu board.
+ * Awning green fascia, brass lettering, espresso ink on chalk; Bodoni for anything you'd
+ * see painted on glass or printed on a menu, Hanken Grotesk for everything you read.
+ */
 @theme inline {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-chalk: #eef0eb;
+  --color-chalk-deep: #e2e5de;
+  --color-porcelain: #fbfbf9;
+  --color-ink: #241b16;
+  --color-ink-soft: #6b625b;
+  --color-awning: #1e4231;
+  --color-awning-deep: #142d21;
+  --color-brass: #a8843a;
+  --color-rule: #d3d6cd;
+
+  --font-sans: "Hanken Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bodoni Moda Variable", "Bodoni 72", Didot, Georgia, serif;
 }
 
 body {
   font-family: var(--font-sans);
+  font-feature-settings: "ss01";
 }
 
-/* Numbered map pins */
+.font-display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brass);
+  outline-offset: 2px;
+}
+
+/* ── Buttons ─────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 3px;
+  background: var(--color-awning);
+  color: var(--color-chalk);
+  padding: 0.6rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background-color 0.15s;
+}
+.btn-primary:hover {
+  background: var(--color-awning-deep);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+}
+
+.btn-quiet {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 3px;
+  border: 1px solid var(--color-rule);
+  background: var(--color-porcelain);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.btn-quiet:hover {
+  border-color: var(--color-ink-soft);
+}
+
+/* ── Menu board: name ........ score ───────────────── */
+.menu-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+.menu-leader {
+  flex: 1;
+  min-width: 2rem;
+  border-bottom: 2px dotted var(--color-rule);
+  transform: translateY(-0.3em);
+}
+
+/* ── Quick ratings ───────────────────────────────── */
+.rating-panel {
+  border: 1px solid var(--color-rule);
+  border-radius: 6px;
+  background: var(--color-porcelain);
+  padding: 1.5rem;
+}
+.score-chip {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 3px;
+  border: 1px solid var(--color-rule);
+  background: var(--color-porcelain);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.875rem;
+  transition: background-color 0.12s, color 0.12s, border-color 0.12s;
+}
+.score-chip:hover {
+  border-color: var(--color-awning);
+}
+.score-chip--on {
+  background: var(--color-awning);
+  border-color: var(--color-awning);
+  color: var(--color-chalk);
+  font-weight: 600;
+}
+
+/* ── Map ─────────────────────────────────────────── */
+/* Quiet the street map so the pins carry the colour. */
+.leaflet-tile-pane {
+  filter: grayscale(0.9) contrast(0.92) brightness(1.04);
+}
 .cafe-pin {
   width: 32px;
   height: 32px;
   border-radius: 9999px;
-  background: #1c1917;
-  color: #fef3c7;
-  border: 2px solid #fff;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.35);
+  background: var(--color-awning);
+  color: var(--color-chalk);
+  border: 2px solid var(--color-porcelain);
+  box-shadow: 0 1px 4px rgb(36 27 22 / 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  font: 700 13px/1 var(--font-sans);
+  font: 600 15px/1 var(--font-display);
+  font-variation-settings: "opsz" 11;
   transition: transform 0.15s;
 }
 .cafe-pin--active {
-  background: #92400e;
-  transform: scale(1.25);
+  background: var(--color-brass);
+  transform: scale(1.2);
 }
 .cafe-pin--community {
-  background: #fff;
-  color: #1c1917;
-  border-color: #92400e;
-  font-size: 15px;
+  background: var(--color-porcelain);
+  color: var(--color-ink);
+  border-color: var(--color-awning);
+  font-size: 14px;
 }
 .cafe-pin--community.cafe-pin--active {
-  background: #fef3c7;
+  background: #f3ead6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Scores and rank numbers: Bodoni's hairlines vanish at display sizes (a "4" reads as "/1"),
+   so figures use a small optical size, which thickens the thin strokes. */
+.figures {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 11;
+  font-weight: 600;
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: 0;
 }

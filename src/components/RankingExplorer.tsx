@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import MapClient from "./MapClient";
-import ScoreBars from "./ScoreBars";
+import { ScoreLine } from "./ScoreBars";
 import { CATEGORIES, formatDate, type RankedCafe } from "@/lib/cafes";
 import type { ScoreCategory } from "@/data/cafes";
 
@@ -32,28 +32,27 @@ export default function RankingExplorer({ cafes }: { cafes: RankedCafe[] }) {
   }, [cafes, query, area, sort]);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr]">
-      <div className="lg:sticky lg:top-6 lg:self-start">
+    <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr]">
+      {/* Menu first on phones; map beside it on wide screens. */}
+      <div className="order-2 lg:sticky lg:top-6 lg:self-start">
         <MapClient cafes={visible} selected={selected} onSelect={setSelected} />
-        <p className="mt-2 text-xs text-stone-500">
-          Numbers on the pins are the overall ranking. Click a pin or a card to jump to it.
-        </p>
+        <p className="mt-2 text-xs text-ink-soft">Pins are numbered by rank. Select a café to find it on the map.</p>
       </div>
 
-      <div>
-        <div className="mb-4 flex flex-wrap gap-2">
+      <div className="order-1">
+        <div className="mb-6 flex flex-wrap gap-2">
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search cafés, areas, drinks…"
-            className="min-w-0 flex-1 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
+            className="min-w-0 basis-full rounded-[3px] border border-rule bg-porcelain px-3 py-2 text-sm sm:basis-auto sm:flex-1"
             aria-label="Search cafés"
           />
           <select
             value={area}
             onChange={(e) => setArea(e.target.value)}
-            className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
+            className="rounded-[3px] border border-rule bg-porcelain px-3 py-2 text-sm"
             aria-label="Filter by area"
           >
             <option value="all">All areas</option>
@@ -66,7 +65,7 @@ export default function RankingExplorer({ cafes }: { cafes: RankedCafe[] }) {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
-            className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
+            className="rounded-[3px] border border-rule bg-porcelain px-3 py-2 text-sm"
             aria-label="Sort by"
           >
             <option value="overall">Best overall</option>
@@ -80,42 +79,42 @@ export default function RankingExplorer({ cafes }: { cafes: RankedCafe[] }) {
         </div>
 
         {visible.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-stone-300 p-8 text-center text-stone-500">
-            No cafés match that.
-          </p>
+          <p className="border-y border-rule py-10 text-center text-ink-soft">No cafés match that search.</p>
         ) : (
-          <ol className="space-y-3">
+          /* The menu board: rank, name, a dotted leader, then the score, like prices on a café menu. */
+          <ol className="border-t border-rule">
             {visible.map((c) => (
-              <li key={c.slug}>
+              <li key={c.slug} className="border-b border-rule">
                 <article
                   onClick={() => setSelected(c.slug)}
-                  className={`cursor-pointer rounded-2xl border bg-white p-4 transition hover:border-stone-400 ${
-                    selected === c.slug ? "border-amber-700 shadow-md" : "border-stone-200"
+                  className={`grid cursor-pointer grid-cols-[2.75rem_1fr] gap-x-4 py-6 transition-colors sm:grid-cols-[3.5rem_1fr] ${
+                    selected === c.slug ? "bg-porcelain" : ""
                   }`}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-stone-900 text-lg font-bold text-amber-100">
-                      {c.rank}
+                  <span className="pl-1 figures text-4xl leading-none text-brass sm:text-5xl">{c.rank}</span>
+                  <div className="min-w-0 pr-1">
+                    <div className="menu-line">
+                      <h3 className="font-display text-2xl leading-tight sm:text-[1.75rem]">
+                        <Link href={`/cafe/${c.slug}`} className="hover:text-awning">
+                          {c.name}
+                        </Link>
+                      </h3>
+                      <span className="menu-leader" aria-hidden />
+                      <span className="figures text-2xl  sm:text-[1.75rem]">
+                        {c.overall.toFixed(1)}
+                      </span>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-baseline justify-between gap-3">
-                        <h3 className="truncate text-lg font-semibold">
-                          <Link href={`/cafe/${c.slug}`} className="hover:underline">
-                            {c.name}
-                          </Link>
-                        </h3>
-                        <span className="shrink-0 text-xl font-bold tabular-nums text-amber-800">
-                          {c.overall.toFixed(1)}
-                        </span>
-                      </div>
-                      <p className="text-sm text-stone-500">
-                        {c.area} · visited {formatDate(c.visited)}
-                        {c.mustOrder && <> · order the {c.mustOrder.toLowerCase()}</>}
+                    <p className="mt-1 text-sm text-ink-soft">
+                      {c.area}, visited {formatDate(c.visited)}
+                    </p>
+                    <p className="mt-3 max-w-prose leading-relaxed">{c.verdict}</p>
+                    {c.mustOrder && (
+                      <p className="mt-1 text-sm text-ink-soft">
+                        Order the <span className="text-ink">{c.mustOrder.toLowerCase()}</span>.
                       </p>
-                      <p className="mt-2 text-sm text-stone-700">{c.verdict}</p>
-                      <div className="mt-3">
-                        <ScoreBars scores={c.scores} compact />
-                      </div>
+                    )}
+                    <div className="mt-3">
+                      <ScoreLine scores={c.scores} />
                     </div>
                   </div>
                 </article>

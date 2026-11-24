@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Community from "@/components/Community";
 import MapClient from "@/components/MapClient";
+import QuickRating from "@/components/QuickRating";
 import ScoreBars from "@/components/ScoreBars";
 import { cafes } from "@/data/cafes";
 import { formatDate, getCafe, getRankedCafes } from "@/lib/cafes";
@@ -28,59 +29,57 @@ export default async function CafePage({ params }: PageProps<"/cafe/[slug]">) {
   const total = getRankedCafes().length;
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-10">
-      <Link href="/" className="text-sm text-stone-500 hover:underline">
-        ← All rankings
+    <main className="mx-auto w-full max-w-5xl px-5 pb-10 pt-10">
+      <Link href="/" className="text-sm text-ink-soft underline-offset-4 hover:text-ink hover:underline">
+        Back to the rankings
       </Link>
 
-      <header className="mt-4 flex flex-wrap items-end justify-between gap-4">
+      <header className="mt-8 grid gap-6 border-b border-rule pb-10 sm:grid-cols-[1fr_auto] sm:items-end">
         <div>
-          <p className="text-sm font-medium uppercase tracking-wide text-amber-800">
-            Ranked #{cafe.rank} of {total}
+          <p className="text-sm text-brass">
+            Kadam&apos;s number {cafe.rank} of {total}
           </p>
-          <h1 className="text-4xl font-bold tracking-tight">{cafe.name}</h1>
-          <p className="mt-1 text-stone-500">
-            {cafe.address ?? cafe.area} · visited {formatDate(cafe.visited)}
+          <h1 className="mt-2 font-display text-5xl leading-[1.05] sm:text-6xl">{cafe.name}</h1>
+          <p className="mt-3 text-ink-soft">
+            {cafe.address ?? cafe.area}. Visited {formatDate(cafe.visited)}.
           </p>
         </div>
-        <div className="text-right">
-          <div className="text-5xl font-bold tabular-nums text-amber-800">{cafe.overall.toFixed(1)}</div>
-          <div className="text-sm text-stone-500">out of 10</div>
-        </div>
+        <p className="figures text-7xl leading-none  text-awning">
+          {cafe.overall.toFixed(1)}
+          <span className="ml-1 font-sans text-lg text-ink-soft">/10</span>
+        </p>
       </header>
 
-      <div className="mt-8 grid gap-8 md:grid-cols-2">
-        <div className="space-y-6">
-          <ScoreBars scores={cafe.scores} />
+      <div className="mt-10 grid gap-12 md:grid-cols-[1fr_1fr]">
+        <div className="space-y-8">
           <div>
-            <p className="text-lg font-medium">{cafe.verdict}</p>
-            {cafe.review && <p className="mt-3 whitespace-pre-line text-stone-700">{cafe.review}</p>}
+            <p className="font-display text-2xl leading-snug">{cafe.verdict}</p>
+            {cafe.review && <p className="mt-4 whitespace-pre-line leading-relaxed text-ink">{cafe.review}</p>}
             {cafe.mustOrder && (
-              <p className="mt-4 text-sm">
-                <span className="font-semibold">Must order:</span> {cafe.mustOrder}
+              <p className="mt-4 text-ink-soft">
+                Order the <span className="text-ink">{cafe.mustOrder.toLowerCase()}</span>.
               </p>
             )}
           </div>
+          <ScoreBars scores={cafe.scores} />
         </div>
-        <MapClient
-          cafes={[cafe]}
-          selected={cafe.slug}
-          height={320}
-          zoom={15}
-          center={[cafe.lat, cafe.lng]}
-        />
+        <MapClient cafes={[cafe]} selected={cafe.slug} height={340} zoom={15} center={[cafe.lat, cafe.lng]} />
       </div>
 
       {cafe.photos && cafe.photos.length > 0 && (
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {cafe.photos.map((src) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={src} src={src} alt={`${cafe.name}`} className="aspect-square w-full rounded-xl object-cover" />
+            <img key={src} src={src} alt={cafe.name} className="aspect-[4/5] w-full rounded-md object-cover" />
           ))}
         </div>
       )}
 
-      <div className="mt-14">
+      <div className="mt-16">
+        <QuickRating cafeSlug={cafe.slug} ownerScore={cafe.overall} />
+      </div>
+
+      <div className="mt-16">
         <Community cafeSlug={cafe.slug} />
       </div>
     </main>

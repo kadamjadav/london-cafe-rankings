@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Avatar, { profileHref } from "./Avatar";
 import Community, { ReportButton } from "./Community";
 import MapClient from "./MapClient";
+import QuickRating from "./QuickRating";
 import { formatDate } from "@/lib/cafes";
 import { COMMUNITY_SELECT, type CommunityCafe } from "@/lib/communityCafes";
 import { getSupabase } from "@/lib/supabase";
@@ -45,14 +46,14 @@ export default function PlaceView() {
   if (state === "missing")
     return (
       <div className="text-center">
-        <h1 className="text-2xl font-bold">Café not found</h1>
-        <p className="mt-2 text-stone-500">It may have been removed.</p>
-        <Link href="/cafes" className="mt-4 inline-block text-amber-800 underline">
+        <h1 className="font-display text-3xl">Café not found</h1>
+        <p className="mt-2 text-ink-soft">It may have been removed.</p>
+        <Link href="/cafes" className="mt-4 inline-block text-awning underline">
           See all cafés
         </Link>
       </div>
     );
-  if (state === "loading" || !cafe) return <p className="text-sm text-stone-500">Loading café…</p>;
+  if (state === "loading" || !cafe) return <p className="text-sm text-ink-soft">Loading café…</p>;
 
   async function deleteCafe() {
     if (!confirm(`Delete ${cafe!.name} and ALL its reviews? This can't be undone.`)) return;
@@ -65,24 +66,24 @@ export default function PlaceView() {
 
   return (
     <>
-      <Link href="/cafes" className="text-sm text-stone-500 hover:underline">
-        ← All cafés
+      <Link href="/cafes" className="text-sm text-ink-soft hover:underline">
+        Back to all cafés
       </Link>
 
       <header className="mt-4">
-        <p className="text-sm font-medium uppercase tracking-wide text-amber-800">Community café</p>
-        <h1 className="text-4xl font-bold tracking-tight">{cafe.name}</h1>
-        <p className="mt-1 text-stone-500">{cafe.address ?? cafe.area}</p>
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-stone-500">
+        <p className="text-sm text-brass">Added by the community</p>
+        <h1 className="mt-2 font-display text-5xl leading-[1.05] sm:text-6xl">{cafe.name}</h1>
+        <p className="mt-1 text-ink-soft">{cafe.address ?? cafe.area}</p>
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-ink-soft">
           Added by
-          <Link href={profileHref(cafe.added_by)} className="inline-flex items-center gap-1.5 font-medium text-stone-800 hover:underline">
+          <Link href={profileHref(cafe.added_by)} className="inline-flex items-center gap-1.5 font-medium text-ink hover:underline">
             <Avatar name={addedByName} id={cafe.added_by} size={20} />
             {addedByName}
           </Link>
           on {formatDate(cafe.created_at.slice(0, 10))}
           {user && user.id !== cafe.added_by && <ReportButton type="cafe" id={cafe.id} small />}
           {isAdmin && (
-            <button onClick={deleteCafe} className="text-xs text-red-700 hover:underline">
+            <button onClick={deleteCafe} className="text-xs text-red-800 hover:underline">
               Delete café (admin)
             </button>
           )}
@@ -99,7 +100,11 @@ export default function PlaceView() {
         />
       </div>
 
-      <div className="mt-12">
+      <div className="mt-14">
+        <QuickRating cafeSlug={cafe.slug} />
+      </div>
+
+      <div className="mt-16">
         <Community cafeSlug={cafe.slug} />
       </div>
     </>

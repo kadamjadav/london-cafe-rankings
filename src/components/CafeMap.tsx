@@ -84,7 +84,7 @@ export default function CafeMap({
       maxBoundsViscosity={1}
       scrollWheelZoom={false}
       style={{ height, width: "100%" }}
-      className="rounded-2xl border border-stone-200 z-0"
+      className="rounded-md border border-rule z-0"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -103,13 +103,13 @@ export default function CafeMap({
                 {c.rank !== undefined && `#${c.rank} `}
                 {c.name}
               </div>
-              <div className="text-stone-500">
+              <div className="text-ink-soft">
                 {c.area}
                 {c.overall !== undefined && ` · ${c.overall.toFixed(1)}/10`}
                 {c.subtitle && ` · ${c.subtitle}`}
               </div>
-              <Link href={c.href ?? `/cafe/${c.slug}`} className="text-amber-800 underline">
-                {c.rank !== undefined ? "Read review →" : "See reviews →"}
+              <Link href={c.href ?? `/cafe/${c.slug}`} className="text-awning underline">
+                {c.rank !== undefined ? "Read the review" : "See what people think"}
               </Link>
             </div>
           </Popup>

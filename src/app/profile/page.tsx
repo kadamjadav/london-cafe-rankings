@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Profile" };
 export default function ProfilePage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
-      <Suspense fallback={<p className="text-sm text-stone-500">Loading profile…</p>}>
+      <Suspense fallback={<p className="text-sm text-ink-soft">Loading profile…</p>}>
         <ProfileView />
       </Suspense>
     </main>

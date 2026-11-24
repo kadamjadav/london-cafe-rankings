@@ -38,7 +38,7 @@ export default function LocationPicker({
       maxBounds={LONDON_BOUNDS}
       maxBoundsViscosity={1}
       style={{ height: 340, width: "100%" }}
-      className="z-0 cursor-crosshair rounded-2xl border border-stone-200"
+      className="z-0 cursor-crosshair rounded-md border border-rule"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

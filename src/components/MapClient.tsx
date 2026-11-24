@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 const MapClient = dynamic(() => import("./CafeMap"), {
   ssr: false,
   loading: () => (
-    <div className="h-[460px] w-full animate-pulse rounded-2xl border border-stone-200 bg-stone-100" />
+    <div className="h-[460px] w-full animate-pulse rounded-md border border-rule bg-chalk-deep" />
   ),
 });
 

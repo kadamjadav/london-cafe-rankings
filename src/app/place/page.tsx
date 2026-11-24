@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Café" };
 export default function PlacePage() {
   return (
     <main className="mx-auto w-full max-w-4xl px-4 py-10">
-      <Suspense fallback={<p className="text-sm text-stone-500">Loading café…</p>}>
+      <Suspense fallback={<p className="text-sm text-ink-soft">Loading café…</p>}>
         <PlaceView />
       </Suspense>
     </main>

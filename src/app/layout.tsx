@@ -14,32 +14,40 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-GB" className="h-full antialiased">
-      <body className="flex min-h-full flex-col bg-[#faf7f2] text-stone-900">
-        <header className="border-b border-stone-200 bg-[#faf7f2]/90 backdrop-blur">
-          <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4">
-            <Link href="/" className="text-lg font-bold tracking-tight">
-              ☕ {SITE_NAME}
+      <body className="flex min-h-full flex-col bg-chalk text-ink">
+        {/* Shopfront fascia: awning green with brass lettering. */}
+        <header className="bg-awning text-chalk">
+          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-5 py-4">
+            <Link href="/" className="font-display text-2xl text-[#d9bd7a] sm:text-[1.7rem]">
+              {SITE_NAME}
             </Link>
-            <nav className="flex items-center gap-1 text-sm sm:gap-3">
-              <Link href="/" className="hidden rounded-full px-3 py-1.5 hover:bg-stone-200/60 sm:inline">
+            <nav className="flex items-center gap-1 text-sm" aria-label="Main">
+              <Link href="/" className="hidden px-3 py-1.5 text-chalk/85 hover:text-chalk sm:inline">
                 Kadam&apos;s picks
               </Link>
-              <Link href="/cafes" className="rounded-full px-3 py-1.5 hover:bg-stone-200/60">
+              <Link href="/cafes" className="px-3 py-1.5 text-chalk/85 hover:text-chalk">
                 All cafés
               </Link>
-              <Link href="/add-cafe" className="rounded-full px-3 py-1.5 hover:bg-stone-200/60">
-                + Add
+              <Link href="/add-cafe" className="px-3 py-1.5 text-chalk/85 hover:text-chalk">
+                Add a café
               </Link>
-              <AuthButton />
+              <span className="ml-2">
+                <AuthButton />
+              </span>
             </nav>
           </div>
         </header>
         <div className="flex-1">{children}</div>
-        <footer className="border-t border-stone-200 py-6 text-center text-xs text-stone-500">
-          Map data © OpenStreetMap contributors ·{" "}
-          <Link href="/privacy" className="underline">
-            Privacy & community rules
-          </Link>
+        <footer className="mt-16 border-t border-rule">
+          <div className="mx-auto flex w-full max-w-6xl flex-wrap justify-between gap-3 px-5 py-8 text-xs text-ink-soft">
+            <p>
+              <span className="font-display text-sm text-ink">{SITE_NAME}</span>, kept by Kadam. Map data ©
+              OpenStreetMap contributors.
+            </p>
+            <Link href="/privacy" className="underline underline-offset-2 hover:text-ink">
+              Privacy and community rules
+            </Link>
+          </div>
         </footer>
       </body>
     </html>

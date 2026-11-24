@@ -70,13 +70,13 @@ export default function ProfileView() {
   if (state === "missing")
     return (
       <div className="text-center">
-        <h1 className="text-2xl font-bold">Profile not found</h1>
-        <Link href="/" className="mt-4 inline-block text-amber-800 underline">
+        <h1 className="font-display text-3xl">Profile not found</h1>
+        <Link href="/" className="mt-4 inline-block text-awning underline">
           Back to the rankings
         </Link>
       </div>
     );
-  if (state === "loading" || !profile) return <p className="text-sm text-stone-500">Loading profile…</p>;
+  if (state === "loading" || !profile) return <p className="text-sm text-ink-soft">Loading profile…</p>;
 
   const isMe = user?.id === profile.id;
   const likesReceived = reviews.reduce((n, r) => n + r.review_likes.length, 0);
@@ -87,24 +87,24 @@ export default function ProfileView() {
       <header className="flex flex-wrap items-start gap-5">
         <Avatar name={profile.display_name} id={profile.id} size={80} />
         <div className="min-w-0 flex-1">
-          <h1 className="text-3xl font-bold tracking-tight">{profile.display_name}</h1>
-          <p className="text-sm text-stone-500">Joined {joined}</p>
-          {profile.bio && <p className="mt-3 whitespace-pre-line text-stone-700">{profile.bio}</p>}
+          <h1 className="font-display text-4xl leading-tight sm:text-5xl">{profile.display_name}</h1>
+          <p className="text-sm text-ink-soft">Joined {joined}</p>
+          {profile.bio && <p className="mt-3 whitespace-pre-line text-ink">{profile.bio}</p>}
           <dl className="mt-4 flex gap-6 text-sm">
             <div>
-              <dt className="text-stone-500">Reviews</dt>
-              <dd className="text-xl font-semibold tabular-nums">{reviews.length}</dd>
+              <dt className="text-ink-soft">Reviews</dt>
+              <dd className="figures text-3xl ">{reviews.length}</dd>
             </div>
             <div>
-              <dt className="text-stone-500">Likes received</dt>
-              <dd className="text-xl font-semibold tabular-nums">{likesReceived}</dd>
+              <dt className="text-ink-soft">Likes received</dt>
+              <dd className="figures text-3xl ">{likesReceived}</dd>
             </div>
           </dl>
         </div>
         {isMe && !editing && (
           <button
             onClick={() => setEditing(true)}
-            className="rounded-full border border-stone-300 bg-white px-4 py-1.5 text-sm font-medium hover:bg-stone-50"
+            className="btn-quiet"
           >
             Edit profile
           </button>
@@ -121,9 +121,9 @@ export default function ProfileView() {
         />
       )}
 
-      <h2 className="mb-4 mt-10 text-xl font-semibold">{isMe ? "Your reviews" : "Reviews"}</h2>
+      <h2 className="mb-4 mt-12 font-display text-2xl">{isMe ? "Your reviews" : "Reviews"}</h2>
       {reviews.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-stone-300 p-6 text-center text-sm text-stone-500">
+        <p className="rounded-md border border-dashed border-rule p-6 text-center text-sm text-ink-soft">
           {isMe ? "You haven't reviewed a café yet. Pick one from the rankings." : "No reviews yet."}
         </p>
       ) : (
@@ -131,28 +131,28 @@ export default function ProfileView() {
           {reviews.map((r) => {
             const cafe = getCafe(r.cafe_slug) ?? communityNames.get(r.cafe_slug);
             return (
-              <li key={r.id} className="rounded-2xl border border-stone-200 bg-white p-4">
+              <li key={r.id} className="rounded-md border border-rule bg-porcelain p-4">
                 <div className="flex items-baseline justify-between gap-3">
                   <Link href={cafeHref(r.cafe_slug)} className="font-semibold hover:underline">
                     {cafe?.name ?? r.cafe_slug}
                   </Link>
-                  <span className="text-xs text-stone-400">{timeAgo(r.created_at)}</span>
+                  <span className="text-xs text-ink-soft">{timeAgo(r.created_at)}</span>
                 </div>
-                {cafe && <p className="text-xs text-stone-500">{cafe.area}</p>}
+                {cafe && <p className="text-xs text-ink-soft">{cafe.area}</p>}
                 <div className="mt-1">
                   <Stars value={r.rating} />
                 </div>
-                <p className="mt-2 whitespace-pre-line text-sm text-stone-700">{r.body}</p>
+                <p className="mt-2 whitespace-pre-line text-sm text-ink">{r.body}</p>
                 {r.photo_path && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={photoUrl(r.photo_path)}
                     alt={`Photo from ${profile.display_name}'s review of ${cafe?.name ?? "a café"}`}
                     loading="lazy"
-                    className="mt-3 max-h-64 rounded-xl object-cover"
+                    className="mt-3 max-h-64 rounded-md object-cover"
                   />
                 )}
-                <p className="mt-3 text-sm text-stone-500">
+                <p className="mt-3 text-sm text-ink-soft">
                   ♡ {r.review_likes.length} · 💬 {r.comments.length} ·{" "}
                   <Link href={cafeHref(r.cafe_slug)} className="underline">
                     see conversation
@@ -186,34 +186,34 @@ function EditProfile({ profile, onDone }: { profile: Profile; onDone: () => void
   }
 
   return (
-    <form onSubmit={save} className="mt-6 space-y-3 rounded-2xl border border-stone-200 bg-white p-4">
+    <form onSubmit={save} className="mt-6 space-y-3 rounded-md border border-rule bg-porcelain p-4">
       <label className="block text-sm font-medium">
         Display name
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           maxLength={40}
-          className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 font-normal"
+          className="mt-1 w-full rounded border border-rule px-3 py-2 font-normal"
         />
       </label>
       <label className="block text-sm font-medium">
-        Bio <span className="font-normal text-stone-400">({280 - bio.length} left)</span>
+        Bio <span className="font-normal text-ink-soft">({280 - bio.length} left)</span>
         <textarea
           value={bio}
           onChange={(e) => setBio(e.target.value)}
           maxLength={280}
           rows={3}
           placeholder="Flat white loyalist. Will cross London for a good croissant."
-          className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 font-normal"
+          className="mt-1 w-full rounded border border-rule px-3 py-2 font-normal"
         />
       </label>
-      <p className="text-xs text-stone-400">Shown publicly. Don&apos;t include your address, phone number or email.</p>
+      <p className="text-xs text-ink-soft">Shown publicly. Don&apos;t include your address, phone number or email.</p>
       <div className="flex items-center gap-3">
-        <button className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white">Save</button>
-        <button type="button" onClick={onDone} className="text-sm text-stone-500 underline">
+        <button className="btn-primary">Save</button>
+        <button type="button" onClick={onDone} className="text-sm text-ink-soft underline">
           Cancel
         </button>
-        {msg && <p className="text-sm text-red-700">{msg}</p>}
+        {msg && <p className="text-sm text-red-800">{msg}</p>}
       </div>
     </form>
   );

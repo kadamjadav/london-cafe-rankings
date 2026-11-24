@@ -77,33 +77,33 @@ export default function AdminPage() {
   else if (loading) content = <p>Loading…</p>;
   else if (!user) content = <p>Sign in first.</p>;
   else if (isAdmin === false) content = <p>You&apos;re not an admin.</p>;
-  else if (reports.length === 0) content = <p className="text-stone-500">No open reports. 🎉</p>;
+  else if (reports.length === 0) content = <p className="text-ink-soft">No open reports. 🎉</p>;
   else
     content = (
       <ul className="space-y-3">
         {reports.map((r) => (
-          <li key={r.id} className="rounded-xl border border-stone-200 bg-white p-4 text-sm">
-            <p className="text-xs uppercase tracking-wide text-stone-400">
+          <li key={r.id} className="rounded-md border border-rule bg-porcelain p-4 text-sm">
+            <p className="text-xs text-ink-soft">
               {r.target_type} · reported {new Date(r.created_at).toLocaleString("en-GB")}
             </p>
             <p className="mt-1">
               <span className="font-medium">Reason:</span> {r.reason}
             </p>
-            <blockquote className="mt-2 border-l-2 border-stone-300 pl-3 text-stone-700">
+            <blockquote className="mt-2 border-l-2 border-rule pl-3 text-ink">
               {r.target ? r.target.body : <em>Already deleted</em>}
             </blockquote>
             {r.target?.cafe_slug && (
-              <Link href={cafeHref(r.target.cafe_slug)} className="text-xs text-amber-800 underline">
+              <Link href={cafeHref(r.target.cafe_slug)} className="text-xs text-awning underline">
                 View on site
               </Link>
             )}
             <div className="mt-3 flex gap-2">
               {r.target && (
-                <button onClick={() => removeContent(r)} className="rounded-lg bg-red-700 px-3 py-1.5 text-white">
+                <button onClick={() => removeContent(r)} className="rounded bg-red-700 px-3 py-1.5 text-white">
                   Delete content
                 </button>
               )}
-              <button onClick={() => resolve(r.id)} className="rounded-lg border border-stone-300 px-3 py-1.5">
+              <button onClick={() => resolve(r.id)} className="rounded border border-rule px-3 py-1.5">
                 {r.target ? "Keep & dismiss" : "Dismiss"}
               </button>
             </div>
@@ -114,8 +114,8 @@ export default function AdminPage() {
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
-      <h1 className="mb-6 text-3xl font-bold">Moderation queue</h1>
-      {msg && <p className="mb-4 text-sm text-red-700">{msg}</p>}
+      <h1 className="mb-8 font-display text-4xl">Moderation queue</h1>
+      {msg && <p className="mb-4 text-sm text-red-800">{msg}</p>}
       {content}
     </main>
   );
