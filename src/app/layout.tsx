@@ -22,7 +22,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </Link>
             <nav className="flex items-center gap-1 text-sm sm:gap-3">
               <Link href="/" className="hidden rounded-full px-3 py-1.5 hover:bg-stone-200/60 sm:inline">
-                Het&apos;s picks
+                Kadam&apos;s picks
               </Link>
               <Link href="/cafes" className="rounded-full px-3 py-1.5 hover:bg-stone-200/60">
                 All cafés

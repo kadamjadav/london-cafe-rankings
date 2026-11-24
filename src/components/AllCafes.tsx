@@ -21,7 +21,7 @@ export default function AllCafes() {
   const [stats, setStats] = useState<Map<string, ReviewStats>>(new Map());
   const [loading, setLoading] = useState(configured);
   const [query, setQuery] = useState("");
-  const [show, setShow] = useState<"all" | "het" | "community">("all");
+  const [show, setShow] = useState<"all" | "owner" | "community">("all");
   const [sort, setSort] = useState<Sort>("reviews");
   const [selected, setSelected] = useState<string | undefined>();
 
@@ -58,8 +58,8 @@ export default function AllCafes() {
       lat: c.lat,
       lng: c.lng,
       href: c.href,
-      rank: c.hetRank,
-      overall: c.hetScore,
+      rank: c.ownerRank,
+      overall: c.ownerScore,
       subtitle: s ? `${s.avg}★ from ${s.count}` : "no reviews yet",
     };
   });
@@ -70,7 +70,7 @@ export default function AllCafes() {
         <div className="max-w-2xl">
           <h1 className="text-4xl font-bold tracking-tight">All cafés</h1>
           <p className="mt-3 text-lg text-stone-600">
-            Het&apos;s picks plus every café the community has added. Been somewhere that isn&apos;t here? Add it, and
+            Kadam&apos;s picks plus every café the community has added. Been somewhere that isn&apos;t here? Add it, and
             anyone can review it.
           </p>
         </div>
@@ -85,7 +85,7 @@ export default function AllCafes() {
       <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr]">
         <div className="lg:sticky lg:top-6 lg:self-start">
           <MapClient cafes={mapCafes} selected={selected} onSelect={setSelected} />
-          <p className="mt-2 text-xs text-stone-500">Numbered pins are Het&apos;s ranking; ☕ pins were added by the community.</p>
+          <p className="mt-2 text-xs text-stone-500">Numbered pins are Kadam&apos;s ranking; ☕ pins were added by the community.</p>
         </div>
 
         <div>
@@ -105,7 +105,7 @@ export default function AllCafes() {
               className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
             >
               <option value="all">All cafés</option>
-              <option value="het">Het&apos;s picks</option>
+              <option value="owner">Kadam&apos;s picks</option>
               <option value="community">Community-added</option>
             </select>
             <select
@@ -148,9 +148,9 @@ export default function AllCafes() {
                             {c.name}
                           </Link>
                         </h2>
-                        {c.source === "het" ? (
+                        {c.source === "owner" ? (
                           <span className="shrink-0 rounded-full bg-stone-900 px-2.5 py-0.5 text-xs font-medium text-amber-100">
-                            Het&apos;s #{c.hetRank}
+                            Kadam&apos;s #{c.ownerRank}
                           </span>
                         ) : (
                           <span className="shrink-0 rounded-full border border-amber-700 px-2.5 py-0.5 text-xs font-medium text-amber-800">

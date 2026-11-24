@@ -12,10 +12,10 @@ export type MapCafe = {
   area: string;
   lat: number;
   lng: number;
-  /** Number shown on the pin (Het's ranking). Community cafés have none. */
+  /** Number shown on the pin (Kadam's ranking). Community cafés have none. */
   rank?: number;
   overall?: number;
-  /** Page to link to; defaults to Het's café page. */
+  /** Page to link to; defaults to Kadam's café page. */
   href?: string;
   /** Extra line in the popup, e.g. "4.2★ from 3 reviews". */
   subtitle?: string;

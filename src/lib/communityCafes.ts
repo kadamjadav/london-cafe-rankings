@@ -18,7 +18,7 @@ export type CommunityCafe = {
 
 export type ReviewStats = { count: number; avg: number | null };
 
-/** Community cafés are prefixed "c-" so their URLs can never clash with Het's. */
+/** Community cafés are prefixed "c-" so their URLs can never clash with Kadam's. */
 export function isCommunitySlug(slug: string) {
   return slug.startsWith("c-");
 }
@@ -66,7 +66,7 @@ export async function fetchCommunityCafes(): Promise<CommunityCafe[]> {
   return (data as unknown as CommunityCafe[]) ?? [];
 }
 
-/** Every café on the site — Het's picks and community-added — in one shape. */
+/** Every café on the site — Kadam's picks and community-added — in one shape. */
 export type AnyCafe = {
   slug: string;
   name: string;
@@ -74,24 +74,24 @@ export type AnyCafe = {
   lat: number;
   lng: number;
   href: string;
-  source: "het" | "community";
-  hetRank?: number;
-  hetScore?: number;
+  source: "owner" | "community";
+  ownerRank?: number;
+  ownerScore?: number;
   addedBy?: { id: string; name: string };
   createdAt?: string;
 };
 
 export function mergeCafes(community: CommunityCafe[]): AnyCafe[] {
-  const het: AnyCafe[] = getRankedCafes().map((c) => ({
+  const owner: AnyCafe[] = getRankedCafes().map((c) => ({
     slug: c.slug,
     name: c.name,
     area: c.area,
     lat: c.lat,
     lng: c.lng,
     href: `/cafe/${c.slug}`,
-    source: "het",
-    hetRank: c.rank,
-    hetScore: c.overall,
+    source: "owner",
+    ownerRank: c.rank,
+    ownerScore: c.overall,
   }));
   const comm: AnyCafe[] = community.map((c) => ({
     slug: c.slug,
@@ -104,5 +104,5 @@ export function mergeCafes(community: CommunityCafe[]): AnyCafe[] {
     addedBy: { id: c.added_by, name: c.profiles?.display_name ?? "someone" },
     createdAt: c.created_at,
   }));
-  return [...het, ...comm];
+  return [...owner, ...comm];
 }

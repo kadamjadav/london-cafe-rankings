@@ -196,10 +196,10 @@ create policy "photos owner or admin delete" on storage.objects for delete to au
   );
 
 -- ───────────────────────── Community cafés ─────────────────────────
--- Cafés added by any signed-in user. Het's own scored rankings stay in src/data/cafes.ts.
+-- Cafés added by any signed-in user. Kadam's own scored rankings stay in src/data/cafes.ts.
 create table if not exists public.community_cafes (
   id uuid not null unique default gen_random_uuid(),
-  slug text primary key check (slug ~ '^c-[a-z0-9-]{2,78}$'), -- "c-" prefix: never collides with Het's café URLs
+  slug text primary key check (slug ~ '^c-[a-z0-9-]{2,78}$'), -- "c-" prefix: never collides with Kadam's café URLs
   name text not null check (char_length(name) between 2 and 80),
   area text not null check (char_length(area) between 2 and 40),
   address text check (address is null or char_length(address) <= 160),
@@ -225,7 +225,7 @@ as $$
 $$;
 
 -- Deleting a café removes its reviews too (reviews reference cafés by slug, not a foreign key,
--- because Het's own cafés live in code, not in the database).
+-- because Kadam's own cafés live in code, not in the database).
 create or replace function public.delete_cafe_reviews()
 returns trigger
 language plpgsql
