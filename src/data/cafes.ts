@@ -46,4 +46,17 @@ export const cafes: Cafe[] = [
     mustOrder: "Cold brew",
     photos: ["/cafes/arome-counter.jpg", "/cafes/arome-cold-brew.jpg"],
   },
+   {
+    slug: "queens-wood-cafe",
+    name: "Queens Wood Cafe",
+    area: "Highgate",
+    address: "42 Muswell Hill Rd, London N10 3JP",
+    lat: 51.58147,
+    lng: -0.14629,
+    visited: "2026-09-23",
+    // Only score what you've judged. Unscored categories show as "–" and don't count towards the overall.
+    scores: { coffee: 8, food: 7 },
+    verdict: "Perfect 9 for the pastries and their hot chocolate.",
+    mustOrder: "Hot Chocolate",
+  },
 ];
