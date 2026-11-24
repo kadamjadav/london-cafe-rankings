@@ -48,7 +48,7 @@ export default function PlaceView() {
       <div className="text-center">
         <h1 className="font-display text-3xl">Café not found</h1>
         <p className="mt-2 text-ink-soft">It may have been removed.</p>
-        <Link href="/cafes" className="mt-4 inline-block text-awning underline">
+        <Link href="/cafes" className="mt-4 inline-block text-pop underline">
           See all cafés
         </Link>
       </div>

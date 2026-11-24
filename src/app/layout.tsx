@@ -15,10 +15,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-GB" className="h-full antialiased">
       <body className="flex min-h-full flex-col bg-chalk text-ink">
-        {/* Shopfront fascia: awning green with brass lettering. */}
+        {/* Shopfront fascia: espresso brown with caramel lettering, Cornishware stripe beneath. */}
         <header className="bg-awning text-chalk">
           <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-5 py-4">
-            <Link href="/" className="font-display text-2xl text-[#d9bd7a] sm:text-[1.7rem]">
+            <Link href="/" className="font-display text-2xl text-[#e3c08a] sm:text-[1.7rem]">
               {SITE_NAME}
             </Link>
             <nav className="flex items-center gap-1 text-sm" aria-label="Main">
@@ -36,6 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </span>
             </nav>
           </div>
+          <div className="cornish-band" aria-hidden />
         </header>
         <div className="flex-1">{children}</div>
         <footer className="mt-16 border-t border-rule">

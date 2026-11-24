@@ -93,7 +93,7 @@ export default function AdminPage() {
               {r.target ? r.target.body : <em>Already deleted</em>}
             </blockquote>
             {r.target?.cafe_slug && (
-              <Link href={cafeHref(r.target.cafe_slug)} className="text-xs text-awning underline">
+              <Link href={cafeHref(r.target.cafe_slug)} className="text-xs text-pop underline">
                 View on site
               </Link>
             )}

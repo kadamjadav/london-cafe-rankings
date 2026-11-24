@@ -80,7 +80,7 @@ export default function QuickRating({ cafeSlug, ownerScore }: { cafeSlug: string
               : "Nobody has scored this café yet."}
           </p>
         </div>
-        <p className="figures text-5xl leading-none  text-awning">
+        <p className="figures text-5xl leading-none  text-pop">
           {score ? score.overall.toFixed(1) : "–"}
           <span className="ml-1 font-sans text-base text-ink-soft">/10</span>
         </p>

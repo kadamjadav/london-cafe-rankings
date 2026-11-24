@@ -71,7 +71,7 @@ export default function ProfileView() {
     return (
       <div className="text-center">
         <h1 className="font-display text-3xl">Profile not found</h1>
-        <Link href="/" className="mt-4 inline-block text-awning underline">
+        <Link href="/" className="mt-4 inline-block text-pop underline">
           Back to the rankings
         </Link>
       </div>

@@ -326,7 +326,7 @@ function ReviewCard({
       )}
 
       <div className="mt-3 flex flex-wrap items-center gap-4 text-sm">
-        <button onClick={toggleLike} className={liked ? "font-medium text-awning" : "text-ink-soft hover:text-ink"}>
+        <button onClick={toggleLike} className={liked ? "font-medium text-pop" : "text-ink-soft hover:text-ink"}>
           {liked ? "♥" : "♡"} {review.review_likes.length}
         </button>
         <span className="text-ink-soft">💬 {review.comments.length}</span>

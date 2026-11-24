@@ -129,7 +129,7 @@ export default function AddCafeForm() {
         <p className="text-sm font-medium">Where is it?</p>
         <p className="mb-2 text-xs text-ink-soft">
           Zoom in and tap the map to drop a pin. Drag it to fine-tune.
-          {spot && <span className="ml-1 font-medium text-awning">Pin placed ✓</span>}
+          {spot && <span className="ml-1 font-medium text-pop">Pin placed ✓</span>}
         </p>
         <LocationPickerClient value={spot} onChange={setSpot} />
       </div>

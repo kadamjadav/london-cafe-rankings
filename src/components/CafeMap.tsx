@@ -108,7 +108,7 @@ export default function CafeMap({
                 {c.overall !== undefined && ` · ${c.overall.toFixed(1)}/10`}
                 {c.subtitle && ` · ${c.subtitle}`}
               </div>
-              <Link href={c.href ?? `/cafe/${c.slug}`} className="text-awning underline">
+              <Link href={c.href ?? `/cafe/${c.slug}`} className="text-pop underline">
                 {c.rank !== undefined ? "Read the review" : "See what people think"}
               </Link>
             </div>

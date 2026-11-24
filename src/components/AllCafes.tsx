@@ -131,7 +131,7 @@ export default function AllCafes() {
           {visible.length === 0 ? (
             <div className="border-y border-rule py-10 text-center text-ink-soft">
               <p>No cafés match that.</p>
-              <Link href="/add-cafe" className="mt-2 inline-block text-awning underline underline-offset-2">
+              <Link href="/add-cafe" className="mt-2 inline-block text-pop underline underline-offset-2">
                 Add it yourself
               </Link>
             </div>
@@ -148,7 +148,7 @@ export default function AllCafes() {
                     >
                       <div className="menu-line">
                         <h2 className="font-display text-2xl leading-tight">
-                          <Link href={c.href} className="hover:text-awning">
+                          <Link href={c.href} className="hover:text-pop">
                             {c.name}
                           </Link>
                         </h2>
@@ -187,7 +187,7 @@ export default function AllCafes() {
                             {r && `${r.count} ${r.count === 1 ? "review" : "reviews"}`}
                           </>
                         ) : (
-                          <Link href={c.href} className="text-awning underline underline-offset-2">
+                          <Link href={c.href} className="text-pop underline underline-offset-2">
                             Be the first to score it
                           </Link>
                         )}

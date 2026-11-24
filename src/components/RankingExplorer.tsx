@@ -95,7 +95,7 @@ export default function RankingExplorer({ cafes }: { cafes: RankedCafe[] }) {
                   <div className="min-w-0 pr-1">
                     <div className="menu-line">
                       <h3 className="font-display text-2xl leading-tight sm:text-[1.75rem]">
-                        <Link href={`/cafe/${c.slug}`} className="hover:text-awning">
+                        <Link href={`/cafe/${c.slug}`} className="hover:text-pop">
                           {c.name}
                         </Link>
                       </h3>

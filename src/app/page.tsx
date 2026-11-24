@@ -18,11 +18,11 @@ export default function Home() {
           </p>
           <p>
             Been somewhere I haven&apos;t?{" "}
-            <Link href="/add-cafe" className="text-awning underline underline-offset-4 hover:text-awning-deep">
+            <Link href="/add-cafe" className="text-pop underline underline-offset-4 hover:text-pop-deep">
               Add it
             </Link>{" "}
             and anyone can score or review it, or{" "}
-            <Link href="/cafes" className="text-awning underline underline-offset-4 hover:text-awning-deep">
+            <Link href="/cafes" className="text-pop underline underline-offset-4 hover:text-pop-deep">
               browse every café
             </Link>
             .

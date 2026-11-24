@@ -4,20 +4,23 @@
 @import "@fontsource-variable/hanken-grotesk/index.css";
 
 /*
- * Design: a London café shopfront and its menu board.
- * Awning green fascia, brass lettering, espresso ink on chalk; Bodoni for anything you'd
- * see painted on glass or printed on a menu, Hanken Grotesk for everything you read.
+ * Design: a London café shopfront, its menu board and its crockery.
+ * Espresso-brown fascia with caramel lettering, latte paper, mocha text, and one pop of
+ * Cornishware blue (the striped café crockery) for anything you can press or that changes.
+ * Bodoni for anything you'd see painted on glass or printed on a menu, Hanken Grotesk for reading.
  */
 @theme inline {
-  --color-chalk: #eef0eb;
-  --color-chalk-deep: #e2e5de;
-  --color-porcelain: #fbfbf9;
-  --color-ink: #241b16;
-  --color-ink-soft: #6b625b;
-  --color-awning: #1e4231;
-  --color-awning-deep: #142d21;
-  --color-brass: #a8843a;
-  --color-rule: #d3d6cd;
+  --color-chalk: #f2ebe1; /* latte: page background */
+  --color-chalk-deep: #e7dccd;
+  --color-porcelain: #fbf8f3; /* surfaces */
+  --color-ink: #2b1d14; /* espresso: text */
+  --color-ink-soft: #7a6556; /* mocha: secondary text */
+  --color-awning: #4a2f21; /* roasted brown: shopfront */
+  --color-awning-deep: #36221a;
+  --color-brass: #a8742f; /* caramel: rank numbers, bars */
+  --color-pop: #2c64c7; /* Cornishware blue: actions and highlights */
+  --color-pop-deep: #1f4d9e;
+  --color-rule: #dccfbf;
 
   --font-sans: "Hanken Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Bodoni Moda Variable", "Bodoni 72", Didot, Georgia, serif;
@@ -36,7 +39,7 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-brass);
+  outline: 2px solid var(--color-pop);
   outline-offset: 2px;
 }
 
@@ -46,8 +49,8 @@ body {
   align-items: center;
   gap: 0.5rem;
   border-radius: 3px;
-  background: var(--color-awning);
-  color: var(--color-chalk);
+  background: var(--color-pop);
+  color: #fff;
   padding: 0.6rem 1.1rem;
   font-size: 0.875rem;
   font-weight: 600;
@@ -55,7 +58,7 @@ body {
   transition: background-color 0.15s;
 }
 .btn-primary:hover {
-  background: var(--color-awning-deep);
+  background: var(--color-pop-deep);
 }
 .btn-primary:disabled {
   opacity: 0.5;
@@ -106,19 +109,19 @@ body {
   transition: background-color 0.12s, color 0.12s, border-color 0.12s;
 }
 .score-chip:hover {
-  border-color: var(--color-awning);
+  border-color: var(--color-pop);
 }
 .score-chip--on {
-  background: var(--color-awning);
-  border-color: var(--color-awning);
-  color: var(--color-chalk);
+  background: var(--color-pop);
+  border-color: var(--color-pop);
+  color: #fff;
   font-weight: 600;
 }
 
 /* ── Map ─────────────────────────────────────────── */
 /* Quiet the street map so the pins carry the colour. */
 .leaflet-tile-pane {
-  filter: grayscale(0.9) contrast(0.92) brightness(1.04);
+  filter: grayscale(0.85) sepia(0.22) contrast(0.92) brightness(1.03);
 }
 .cafe-pin {
   width: 32px;
@@ -136,7 +139,8 @@ body {
   transition: transform 0.15s;
 }
 .cafe-pin--active {
-  background: var(--color-brass);
+  background: var(--color-pop);
+  color: #fff;
   transform: scale(1.2);
 }
 .cafe-pin--community {
@@ -146,7 +150,8 @@ body {
   font-size: 14px;
 }
 .cafe-pin--community.cafe-pin--active {
-  background: #f3ead6;
+  background: var(--color-pop);
+  border-color: var(--color-pop);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -166,4 +171,14 @@ body {
   font-weight: 600;
   font-variant-numeric: lining-nums tabular-nums;
   letter-spacing: 0;
+}
+
+/* The pop: a band of Cornishware stripes under the brown shopfront. */
+.cornish-band {
+  height: 10px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-pop) 0 14px,
+    #f7f3ec 14px 26px
+  );
 }
