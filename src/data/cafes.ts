@@ -41,7 +41,7 @@ export const cafes: Cafe[] = [
     lng: -0.1312,
     visited: "2026-11-24",
     // Only score what you've judged. Unscored categories show as "–" and don't count towards the overall.
-    scores: { coffee: 10, food: 10 },
+    scores: { coffee: 10, food: 10 , vibe: 9, value: 9, laptop: 4},
     verdict: "Perfect 10 for the pastries and the cold brew.",
     mustOrder: "Cold brew",
     photos: ["/cafes/arome-counter.jpg", "/cafes/arome-cold-brew.jpg"],
@@ -55,7 +55,7 @@ export const cafes: Cafe[] = [
     lng: -0.14629,
     visited: "2026-09-23",
     // Only score what you've judged. Unscored categories show as "–" and don't count towards the overall.
-    scores: { coffee: 8, food: 7 },
+    scores: { coffee: 8, food: 7, vibe: 10, value: 7, laptop: 10 },
     verdict: "Perfect 9 for the pastries and their hot chocolate.",
     mustOrder: "Hot Chocolate",
   },
