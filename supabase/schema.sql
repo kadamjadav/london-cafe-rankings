@@ -88,6 +88,19 @@ create table if not exists public.reports (
   unique (target_type, target_id, reporter_id)
 );
 
+-- ───────────────────────── API access ─────────────────────────
+-- New Supabase projects don't expose new tables to the API automatically, so grant
+-- exactly what the site needs. RLS policies below still decide which ROWS each user can touch.
+grant usage on schema public to anon, authenticated;
+grant select on public.profiles, public.reviews, public.review_likes, public.comments to anon, authenticated;
+grant update (display_name) on public.profiles to authenticated;
+grant insert, update, delete on public.reviews to authenticated;
+grant insert, delete on public.review_likes to authenticated;
+grant insert, delete on public.comments to authenticated;
+grant insert, select, update (resolved) on public.reports to authenticated;
+grant execute on function public.is_admin() to anon, authenticated;
+-- public.admins gets no grants at all: it is only readable through is_admin().
+
 -- ───────────────────────── Row Level Security ─────────────────────────
 alter table public.profiles     enable row level security;
 alter table public.admins       enable row level security;
