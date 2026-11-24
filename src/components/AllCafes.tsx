@@ -48,7 +48,7 @@ export default function AllCafes() {
     return list.sort((a, b) => {
       if (sort === "score") return sc(b) - sc(a) || raters(b) - raters(a) || n(b) - n(a);
       if (sort === "reviews") return n(b) - n(a) || sc(b) - sc(a) || a.name.localeCompare(b.name);
-      if (sort === "newest") return (b.createdAt ?? "").localeCompare(a.createdAt ?? "");
+      if (sort === "newest") return (b.createdAt ?? "").localeCompare(a.createdAt ?? "") || a.name.localeCompare(b.name);
       return a.name.localeCompare(b.name);
     });
   }, [cafes, stats, scores, query, show, sort]);
@@ -167,6 +167,8 @@ export default function AllCafes() {
                             . <span className="text-brass">Kadam&apos;s number {c.ownerRank}</span>, scored{" "}
                             {c.ownerScore?.toFixed(1)}
                           </>
+                        ) : c.fromOsm ? (
+                          <>. Listed from OpenStreetMap</>
                         ) : (
                           c.addedBy && (
                             <>

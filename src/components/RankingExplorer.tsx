@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { fetchCommunityCafes, type CommunityCafe } from "@/lib/communityCafes";
 import MapClient from "./MapClient";
 import { ScoreLine } from "./ScoreBars";
 import { CATEGORIES, formatDate, type RankedCafe } from "@/lib/cafes";
@@ -14,6 +15,11 @@ export default function RankingExplorer({ cafes }: { cafes: RankedCafe[] }) {
   const [area, setArea] = useState("all");
   const [sort, setSort] = useState<SortKey>("overall");
   const [selected, setSelected] = useState<string | undefined>();
+  const [community, setCommunity] = useState<CommunityCafe[]>([]);
+
+  useEffect(() => {
+    fetchCommunityCafes().then(setCommunity);
+  }, []);
 
   const areas = useMemo(() => [...new Set(cafes.map((c) => c.area))].sort(), [cafes]);
 
@@ -35,8 +41,24 @@ export default function RankingExplorer({ cafes }: { cafes: RankedCafe[] }) {
     <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr]">
       {/* Menu first on phones; map beside it on wide screens. */}
       <div className="order-2 lg:sticky lg:top-6 lg:self-start">
-        <MapClient cafes={visible} selected={selected} onSelect={setSelected} />
-        <p className="mt-2 text-xs text-ink-soft">Pins are numbered by rank. Select a café to find it on the map.</p>
+        <MapClient
+          cafes={[
+            ...visible,
+            ...community.map((c) => ({
+              slug: c.slug,
+              name: c.name,
+              area: c.area,
+              lat: c.lat,
+              lng: c.lng,
+              href: `/place?slug=${c.slug}`,
+            })),
+          ]}
+          selected={selected}
+          onSelect={setSelected}
+        />
+        <p className="mt-2 text-xs text-ink-soft">
+          Numbered pins are my ranking. Cup pins are other London cafés anyone can score or review.
+        </p>
       </div>
 
       <div className="order-1">

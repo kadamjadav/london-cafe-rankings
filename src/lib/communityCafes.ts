@@ -11,7 +11,9 @@ export type CommunityCafe = {
   address: string | null;
   lat: number;
   lng: number;
-  added_by: string;
+  /** Null for cafés listed from OpenStreetMap rather than added by a person. */
+  added_by: string | null;
+  source: "user" | "osm";
   created_at: string;
   profiles?: { display_name: string } | null;
 };
@@ -40,7 +42,7 @@ export function slugify(name: string, area: string) {
 }
 
 export const COMMUNITY_SELECT =
-  "id, slug, name, area, address, lat, lng, added_by, created_at, profiles!community_cafes_added_by_fkey(display_name)";
+  "id, slug, name, area, address, lat, lng, added_by, source, created_at, profiles!community_cafes_added_by_fkey(display_name)";
 
 /** Review count and average star rating for every café slug that has reviews. */
 export async function fetchReviewStats(): Promise<Map<string, ReviewStats>> {
@@ -78,6 +80,8 @@ export type AnyCafe = {
   ownerRank?: number;
   ownerScore?: number;
   addedBy?: { id: string; name: string };
+  /** Listed from OpenStreetMap so the map isn't empty; nobody has added or reviewed it yet. */
+  fromOsm?: boolean;
   createdAt?: string;
 };
 
@@ -101,8 +105,9 @@ export function mergeCafes(community: CommunityCafe[]): AnyCafe[] {
     lng: c.lng,
     href: cafeHref(c.slug),
     source: "community",
-    addedBy: { id: c.added_by, name: c.profiles?.display_name ?? "someone" },
-    createdAt: c.created_at,
+    addedBy: c.added_by ? { id: c.added_by, name: c.profiles?.display_name ?? "someone" } : undefined,
+    fromOsm: c.source === "osm",
+    createdAt: c.source === "osm" ? undefined : c.created_at,
   }));
   return [...owner, ...comm];
 }

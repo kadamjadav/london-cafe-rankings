@@ -53,9 +53,10 @@ function FitToCafes({ cafes }: { cafes: MapCafe[] }) {
       padding: [40, 40],
       maxZoom: 14,
     });
-    // Only on mount — re-fitting on every filter change would fight the user's panning.
+    // Re-fit only when the number of pins changes (e.g. community cafés finish loading),
+    // not on every render, so it doesn't fight the user's panning.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [cafes.length]);
   return null;
 }
 

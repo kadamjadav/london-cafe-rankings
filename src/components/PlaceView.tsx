@@ -71,16 +71,31 @@ export default function PlaceView() {
       </Link>
 
       <header className="mt-4">
-        <p className="text-sm text-brass">Added by the community</p>
+        <p className="text-sm text-brass">{cafe.added_by ? "Added by the community" : "On the map"}</p>
         <h1 className="mt-2 font-display text-5xl leading-[1.05] sm:text-6xl">{cafe.name}</h1>
         <p className="mt-1 text-ink-soft">{cafe.address ?? cafe.area}</p>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-ink-soft">
-          Added by
-          <Link href={profileHref(cafe.added_by)} className="inline-flex items-center gap-1.5 font-medium text-ink hover:underline">
-            <Avatar name={addedByName} id={cafe.added_by} size={20} />
-            {addedByName}
-          </Link>
-          on {formatDate(cafe.created_at.slice(0, 10))}
+          {cafe.added_by ? (
+            <>
+              Added by
+              <Link
+                href={profileHref(cafe.added_by)}
+                className="inline-flex items-center gap-1.5 font-medium text-ink hover:underline"
+              >
+                <Avatar name={addedByName} id={cafe.added_by} size={20} />
+                {addedByName}
+              </Link>
+              on {formatDate(cafe.created_at.slice(0, 10))}
+            </>
+          ) : (
+            <>
+              Listed from{" "}
+              <a href="https://www.openstreetmap.org/copyright" className="underline underline-offset-2">
+                OpenStreetMap
+              </a>
+              . Nobody has reviewed it here yet.
+            </>
+          )}
           {user && user.id !== cafe.added_by && <ReportButton type="cafe" id={cafe.id} small />}
           {isAdmin && (
             <button onClick={deleteCafe} className="text-xs text-red-800 hover:underline">
