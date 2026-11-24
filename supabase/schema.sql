@@ -194,3 +194,71 @@ create policy "photos owner or admin delete" on storage.objects for delete to au
     bucket_id = 'review-photos'
     and ((storage.foldername(name))[1] = auth.uid()::text or public.is_admin())
   );
+
+-- ───────────────────────── Community cafés ─────────────────────────
+-- Cafés added by any signed-in user. Het's own scored rankings stay in src/data/cafes.ts.
+create table if not exists public.community_cafes (
+  id uuid not null unique default gen_random_uuid(),
+  slug text primary key check (slug ~ '^c-[a-z0-9-]{2,78}$'), -- "c-" prefix: never collides with Het's café URLs
+  name text not null check (char_length(name) between 2 and 80),
+  area text not null check (char_length(area) between 2 and 40),
+  address text check (address is null or char_length(address) <= 160),
+  -- Greater London only
+  lat double precision not null check (lat between 51.28 and 51.70),
+  lng double precision not null check (lng between -0.51 and 0.33),
+  added_by uuid not null default auth.uid() references public.profiles (id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+-- Block exact duplicates (same name in the same area, ignoring case and spaces).
+create unique index if not exists community_cafes_name_area_idx
+  on public.community_cafes (lower(regexp_replace(name, '\s+', ' ', 'g')), lower(area));
+
+-- How many cafés this user added in the last 24h (used to rate-limit spam).
+create or replace function public.cafes_added_today(uid uuid)
+returns int
+language sql
+stable
+security definer set search_path = public
+as $$
+  select count(*)::int from public.community_cafes
+  where added_by = uid and created_at > now() - interval '1 day';
+$$;
+
+-- Deleting a café removes its reviews too (reviews reference cafés by slug, not a foreign key,
+-- because Het's own cafés live in code, not in the database).
+create or replace function public.delete_cafe_reviews()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  delete from public.reviews where cafe_slug = old.slug;
+  return old;
+end;
+$$;
+drop trigger if exists on_community_cafe_deleted on public.community_cafes;
+create trigger on_community_cafe_deleted
+  after delete on public.community_cafes
+  for each row execute function public.delete_cafe_reviews();
+
+-- Cafés can be reported too.
+alter table public.reports drop constraint if exists reports_target_type_check;
+alter table public.reports add constraint reports_target_type_check
+  check (target_type in ('review', 'comment', 'cafe'));
+
+grant select on public.community_cafes to anon, authenticated;
+grant insert (slug, name, area, address, lat, lng) on public.community_cafes to authenticated;
+grant delete on public.community_cafes to authenticated;
+grant execute on function public.cafes_added_today(uuid) to authenticated;
+revoke execute on function public.delete_cafe_reviews() from public, anon, authenticated;
+
+alter table public.community_cafes enable row level security;
+drop policy if exists "community cafes readable" on public.community_cafes;
+create policy "community cafes readable" on public.community_cafes for select using (true);
+drop policy if exists "community cafes own insert" on public.community_cafes;
+create policy "community cafes own insert" on public.community_cafes for insert to authenticated
+  with check (auth.uid() = added_by and public.cafes_added_today(auth.uid()) < 5);
+-- Only admins delete (an owner deleting would also wipe other people's reviews).
+drop policy if exists "community cafes admin delete" on public.community_cafes;
+create policy "community cafes admin delete" on public.community_cafes for delete to authenticated
+  using (public.is_admin());

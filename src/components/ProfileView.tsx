@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import { Stars, timeAgo } from "./Community";
 import { getCafe } from "@/lib/cafes";
+import { cafeHref, isCommunitySlug } from "@/lib/communityCafes";
 import { getSupabase, photoUrl } from "@/lib/supabase";
 import { useUser } from "@/lib/useSession";
 
@@ -33,6 +34,7 @@ export default function ProfileView() {
     supabase && UUID.test(id) ? "loading" : "missing",
   );
   const [editing, setEditing] = useState(false);
+  const [communityNames, setCommunityNames] = useState<Map<string, { name: string; area: string }>>(new Map());
 
   const load = useCallback(() => {
     if (!supabase || !UUID.test(id)) return;
@@ -45,9 +47,19 @@ export default function ProfileView() {
         .order("created_at", { ascending: false }),
     ]).then(([p, r]) => {
       if (!p.data) return setState("missing");
+      const list = (r.data as ProfileReview[]) ?? [];
       setProfile(p.data as Profile);
-      setReviews((r.data as ProfileReview[]) ?? []);
+      setReviews(list);
       setState("ready");
+      const slugs = [...new Set(list.map((x) => x.cafe_slug).filter(isCommunitySlug))];
+      if (slugs.length)
+        supabase
+          .from("community_cafes")
+          .select("slug, name, area")
+          .in("slug", slugs)
+          .then(({ data }) =>
+            setCommunityNames(new Map((data ?? []).map((c) => [c.slug as string, { name: c.name as string, area: c.area as string }]))),
+          );
     });
   }, [supabase, id]);
 
@@ -117,11 +129,11 @@ export default function ProfileView() {
       ) : (
         <ul className="space-y-4">
           {reviews.map((r) => {
-            const cafe = getCafe(r.cafe_slug);
+            const cafe = getCafe(r.cafe_slug) ?? communityNames.get(r.cafe_slug);
             return (
               <li key={r.id} className="rounded-2xl border border-stone-200 bg-white p-4">
                 <div className="flex items-baseline justify-between gap-3">
-                  <Link href={`/cafe/${r.cafe_slug}`} className="font-semibold hover:underline">
+                  <Link href={cafeHref(r.cafe_slug)} className="font-semibold hover:underline">
                     {cafe?.name ?? r.cafe_slug}
                   </Link>
                   <span className="text-xs text-stone-400">{timeAgo(r.created_at)}</span>
@@ -142,7 +154,7 @@ export default function ProfileView() {
                 )}
                 <p className="mt-3 text-sm text-stone-500">
                   ♡ {r.review_likes.length} · 💬 {r.comments.length} ·{" "}
-                  <Link href={`/cafe/${r.cafe_slug}`} className="underline">
+                  <Link href={cafeHref(r.cafe_slug)} className="underline">
                     see conversation
                   </Link>
                 </p>

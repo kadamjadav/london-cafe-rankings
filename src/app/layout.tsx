@@ -20,7 +20,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Link href="/" className="text-lg font-bold tracking-tight">
               ☕ {SITE_NAME}
             </Link>
-            <AuthButton />
+            <nav className="flex items-center gap-1 text-sm sm:gap-3">
+              <Link href="/" className="hidden rounded-full px-3 py-1.5 hover:bg-stone-200/60 sm:inline">
+                Het&apos;s picks
+              </Link>
+              <Link href="/cafes" className="rounded-full px-3 py-1.5 hover:bg-stone-200/60">
+                All cafés
+              </Link>
+              <Link href="/add-cafe" className="rounded-full px-3 py-1.5 hover:bg-stone-200/60">
+                + Add
+              </Link>
+              <AuthButton />
+            </nav>
           </div>
         </header>
         <div className="flex-1">{children}</div>

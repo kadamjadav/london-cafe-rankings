@@ -1,3 +1,4 @@
+import Link from "next/link";
 import RankingExplorer from "@/components/RankingExplorer";
 import { getRankedCafes } from "@/lib/cafes";
 
@@ -18,6 +19,17 @@ export default function Home() {
             </>
           )}
           . Been to one? Add your own review on its page.
+        </p>
+        <p className="mt-3 text-stone-600">
+          Somewhere I haven&apos;t been?{" "}
+          <Link href="/cafes" className="font-medium text-amber-800 underline">
+            Browse community cafés
+          </Link>{" "}
+          or{" "}
+          <Link href="/add-cafe" className="font-medium text-amber-800 underline">
+            add one
+          </Link>{" "}
+          for everyone to review.
         </p>
       </section>
 

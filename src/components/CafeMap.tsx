@@ -12,18 +12,24 @@ export type MapCafe = {
   area: string;
   lat: number;
   lng: number;
-  rank: number;
-  overall: number;
+  /** Number shown on the pin (Het's ranking). Community cafés have none. */
+  rank?: number;
+  overall?: number;
+  /** Page to link to; defaults to Het's café page. */
+  href?: string;
+  /** Extra line in the popup, e.g. "4.2★ from 3 reviews". */
+  subtitle?: string;
 };
 
 // Greater London, roughly. Panning is limited to this box so the map stays "a map of London".
 const LONDON_BOUNDS = L.latLngBounds([51.28, -0.51], [51.7, 0.33]);
 const LONDON_CENTRE: [number, number] = [51.5074, -0.1278];
 
-function rankIcon(rank: number, active: boolean) {
+function rankIcon(rank: number | undefined, active: boolean) {
+  const community = rank === undefined;
   return L.divIcon({
     className: "",
-    html: `<div class="cafe-pin${active ? " cafe-pin--active" : ""}">${rank}</div>`,
+    html: `<div class="cafe-pin${community ? " cafe-pin--community" : ""}${active ? " cafe-pin--active" : ""}">${community ? "☕" : rank}</div>`,
     iconSize: [32, 32],
     iconAnchor: [16, 16],
     popupAnchor: [0, -16],
@@ -94,13 +100,16 @@ export default function CafeMap({
           <Popup>
             <div className="text-sm">
               <div className="font-semibold">
-                #{c.rank} {c.name}
+                {c.rank !== undefined && `#${c.rank} `}
+                {c.name}
               </div>
               <div className="text-stone-500">
-                {c.area} · {c.overall.toFixed(1)}/10
+                {c.area}
+                {c.overall !== undefined && ` · ${c.overall.toFixed(1)}/10`}
+                {c.subtitle && ` · ${c.subtitle}`}
               </div>
-              <Link href={`/cafe/${c.slug}`} className="text-amber-800 underline">
-                Read review →
+              <Link href={c.href ?? `/cafe/${c.slug}`} className="text-amber-800 underline">
+                {c.rank !== undefined ? "Read review →" : "See reviews →"}
               </Link>
             </div>
           </Popup>

@@ -27,3 +27,12 @@ body {
   background: #92400e;
   transform: scale(1.25);
 }
+.cafe-pin--community {
+  background: #fff;
+  color: #1c1917;
+  border-color: #92400e;
+  font-size: 15px;
+}
+.cafe-pin--community.cafe-pin--active {
+  background: #fef3c7;
+}

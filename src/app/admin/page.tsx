@@ -3,17 +3,31 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { getSupabase, PHOTO_BUCKET } from "@/lib/supabase";
+import { cafeHref } from "@/lib/communityCafes";
 import { useUser } from "@/lib/useSession";
 
 type Report = {
   id: string;
-  target_type: "review" | "comment";
+  target_type: "review" | "comment" | "cafe";
   target_id: string;
   reason: string;
   created_at: string;
 };
 
 type Target = { body: string; cafe_slug?: string; photo_path?: string | null } | null;
+
+async function fetchTarget(supabase: NonNullable<ReturnType<typeof getSupabase>>, r: Report): Promise<Target> {
+  if (r.target_type === "review") {
+    const { data } = await supabase.from("reviews").select("body, cafe_slug, photo_path").eq("id", r.target_id).maybeSingle();
+    return data as Target;
+  }
+  if (r.target_type === "comment") {
+    const { data } = await supabase.from("comments").select("body").eq("id", r.target_id).maybeSingle();
+    return data as Target;
+  }
+  const { data } = await supabase.from("community_cafes").select("name, area, slug").eq("id", r.target_id).maybeSingle();
+  return data ? { body: `Café: ${data.name} (${data.area})`, cafe_slug: data.slug } : null;
+}
 
 export default function AdminPage() {
   const supabase = getSupabase();
@@ -31,13 +45,7 @@ export default function AdminPage() {
       .order("created_at", { ascending: true });
     if (error) return setMsg(error.message);
     const withTargets = await Promise.all(
-      (data as Report[]).map(async (r) => {
-        const { data: target } =
-          r.target_type === "review"
-            ? await supabase.from("reviews").select("body, cafe_slug, photo_path").eq("id", r.target_id).maybeSingle()
-            : await supabase.from("comments").select("body").eq("id", r.target_id).maybeSingle();
-        return { ...r, target: target as Target };
-      }),
+      (data as Report[]).map(async (r) => ({ ...r, target: await fetchTarget(supabase, r) })),
     );
     setReports(withTargets);
   }, [supabase]);
@@ -56,8 +64,8 @@ export default function AdminPage() {
   }
 
   async function removeContent(r: Report & { target: Target }) {
-    if (!confirm("Delete this content permanently?")) return;
-    const table = r.target_type === "review" ? "reviews" : "comments";
+    if (!confirm(r.target_type === "cafe" ? "Delete this café and ALL its reviews permanently?" : "Delete this content permanently?")) return;
+    const table = r.target_type === "review" ? "reviews" : r.target_type === "comment" ? "comments" : "community_cafes";
     const { error } = await supabase!.from(table).delete().eq("id", r.target_id);
     if (error) return setMsg(error.message);
     if (r.target?.photo_path) await supabase!.storage.from(PHOTO_BUCKET).remove([r.target.photo_path]);
@@ -85,7 +93,7 @@ export default function AdminPage() {
               {r.target ? r.target.body : <em>Already deleted</em>}
             </blockquote>
             {r.target?.cafe_slug && (
-              <Link href={`/cafe/${r.target.cafe_slug}`} className="text-xs text-amber-800 underline">
+              <Link href={cafeHref(r.target.cafe_slug)} className="text-xs text-amber-800 underline">
                 View on site
               </Link>
             )}

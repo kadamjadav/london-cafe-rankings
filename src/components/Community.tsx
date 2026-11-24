@@ -387,7 +387,7 @@ function ReviewCard({
   );
 }
 
-function ReportButton({ type, id, small }: { type: "review" | "comment"; id: string; small?: boolean }) {
+export function ReportButton({ type, id, small }: { type: "review" | "comment" | "cafe"; id: string; small?: boolean }) {
   const supabase = getSupabase()!;
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
