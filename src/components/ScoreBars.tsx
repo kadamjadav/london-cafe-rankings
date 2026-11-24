@@ -5,7 +5,7 @@ export default function ScoreBars({
   scores,
   compact = false,
 }: {
-  scores: Record<ScoreCategory, number>;
+  scores: Partial<Record<ScoreCategory, number>>;
   compact?: boolean;
 }) {
   return (
@@ -19,10 +19,10 @@ export default function ScoreBars({
             <div className="h-1.5 w-full rounded-full bg-stone-200">
               <div
                 className="h-1.5 rounded-full bg-amber-700"
-                style={{ width: `${scores[key] * 10}%` }}
+                style={{ width: `${(scores[key] ?? 0) * 10}%` }}
               />
             </div>
-            {!compact && <span className="text-right text-sm font-medium tabular-nums">{scores[key]}</span>}
+            {!compact && <span className="text-right text-sm font-medium tabular-nums">{scores[key] ?? "–"}</span>}
           </dd>
         </div>
       ))}

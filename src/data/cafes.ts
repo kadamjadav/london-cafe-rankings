@@ -5,11 +5,10 @@
  *   1. Copy one of the objects below.
  *   2. Give it a unique `slug` (lowercase, dashes) — it becomes the URL /cafe/<slug>.
  *   3. Get lat/lng by right-clicking the spot in Google Maps or openstreetmap.org.
- *   4. Score each category out of 10. The overall score and the ranking are calculated for you.
+ *   4. Score each category out of 10. The overall score (average of the scored categories) and the ranking are calculated for you.
  *   5. Put your own photos in /public/cafes/ and list them as "/cafes/your-photo.jpg".
  *
- * The entries marked `sample: true` are placeholders so the site isn't empty.
- * Delete them once you've added your first real café — the "sample data" banner disappears automatically.
+ * You don't have to score every category — leave one out and it won't count towards the overall score.
  */
 
 export type ScoreCategory = "coffee" | "food" | "vibe" | "value" | "laptop";
@@ -23,63 +22,28 @@ export type Cafe = {
   lng: number;
   /** Date you visited, YYYY-MM-DD */
   visited: string;
-  scores: Record<ScoreCategory, number>;
+  scores: Partial<Record<ScoreCategory, number>>;
   /** One-line verdict shown on the ranking card */
   verdict: string;
   /** Longer write-up shown on the café page */
   review?: string;
   mustOrder?: string;
   photos?: string[];
-  sample?: boolean;
 };
 
 export const cafes: Cafe[] = [
   {
-    slug: "sample-cafe-shoreditch",
-    name: "Sample Café — Shoreditch",
-    area: "Shoreditch",
-    lat: 51.5245,
-    lng: -0.078,
-    visited: "2026-11-01",
-    scores: { coffee: 9, food: 7, vibe: 8, value: 6, laptop: 7 },
-    verdict: "Placeholder entry — replace with a café you've actually visited.",
-    review:
-      "This is sample text. Write what the coffee tasted like, what the room felt like, how busy it was, and whether you'd go back.",
-    mustOrder: "Flat white",
-    sample: true,
-  },
-  {
-    slug: "sample-cafe-soho",
-    name: "Sample Café — Soho",
+    slug: "arome-bakery-soho",
+    name: "Arôme Bakery",
     area: "Soho",
-    lat: 51.5136,
-    lng: -0.1365,
-    visited: "2026-11-05",
-    scores: { coffee: 8, food: 8, vibe: 9, value: 5, laptop: 4 },
-    verdict: "Placeholder entry — replace with a café you've actually visited.",
-    mustOrder: "Cortado",
-    sample: true,
-  },
-  {
-    slug: "sample-cafe-brixton",
-    name: "Sample Café — Brixton",
-    area: "Brixton",
-    lat: 51.4613,
-    lng: -0.1156,
-    visited: "2026-11-12",
-    scores: { coffee: 7, food: 9, vibe: 7, value: 8, laptop: 6 },
-    verdict: "Placeholder entry — replace with a café you've actually visited.",
-    sample: true,
-  },
-  {
-    slug: "sample-cafe-camden",
-    name: "Sample Café — Camden",
-    area: "Camden",
-    lat: 51.539,
-    lng: -0.1426,
-    visited: "2026-11-20",
-    scores: { coffee: 6, food: 6, vibe: 8, value: 7, laptop: 9 },
-    verdict: "Placeholder entry — replace with a café you've actually visited.",
-    sample: true,
+    address: "90–92 Shaftesbury Avenue, London W1D 5EA",
+    lat: 51.5116,
+    lng: -0.1312,
+    visited: "2026-11-24",
+    // Only score what you've judged. Unscored categories show as "–" and don't count towards the overall.
+    scores: { coffee: 10, food: 10 },
+    verdict: "Perfect 10 for the pastries and the cold brew.",
+    mustOrder: "Cold brew",
+    photos: ["/cafes/arome-counter.jpg", "/cafes/arome-cold-brew.jpg"],
   },
 ];

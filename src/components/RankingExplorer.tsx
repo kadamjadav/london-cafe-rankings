@@ -27,7 +27,7 @@ export default function RankingExplorer({ cafes }: { cafes: RankedCafe[] }) {
     return [...filtered].sort((a, b) => {
       if (sort === "overall") return a.rank - b.rank;
       if (sort === "recent") return b.visited.localeCompare(a.visited);
-      return b.scores[sort] - a.scores[sort] || a.rank - b.rank;
+      return (b.scores[sort] ?? -1) - (a.scores[sort] ?? -1) || a.rank - b.rank;
     });
   }, [cafes, query, area, sort]);
 

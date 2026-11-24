@@ -10,8 +10,10 @@ export const CATEGORIES: { key: ScoreCategory; label: string }[] = [
 
 export type RankedCafe = Cafe & { overall: number; rank: number };
 
+/** Average of the categories that have been scored (unscored ones are ignored). */
 export function overallScore(cafe: Cafe): number {
-  const values = CATEGORIES.map((c) => cafe.scores[c.key]);
+  const values = CATEGORIES.map((c) => cafe.scores[c.key]).filter((v): v is number => v !== undefined);
+  if (values.length === 0) return 0;
   const avg = values.reduce((a, b) => a + b, 0) / values.length;
   return Math.round(avg * 10) / 10;
 }
@@ -23,7 +25,7 @@ export function getRankedCafes(): RankedCafe[] {
     .sort(
       (a, b) =>
         b.overall - a.overall ||
-        b.scores.coffee - a.scores.coffee ||
+        (b.scores.coffee ?? 0) - (a.scores.coffee ?? 0) ||
         b.visited.localeCompare(a.visited),
     )
     .map((c, i) => ({ ...c, rank: i + 1 }));
@@ -31,10 +33,6 @@ export function getRankedCafes(): RankedCafe[] {
 
 export function getCafe(slug: string): RankedCafe | undefined {
   return getRankedCafes().find((c) => c.slug === slug);
-}
-
-export function hasSampleData(): boolean {
-  return cafes.some((c) => c.sample);
 }
 
 export function formatDate(iso: string): string {
