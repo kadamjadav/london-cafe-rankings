@@ -91,7 +91,7 @@ export default function RankingExplorer({ cafes }: { cafes: RankedCafe[] }) {
                     selected === c.slug ? "bg-porcelain" : ""
                   }`}
                 >
-                  <span className="pl-1 figures text-4xl leading-none text-brass sm:text-5xl">{c.rank}</span>
+                  <span className="pl-1 figures text-4xl leading-none text-pop sm:text-5xl">{c.rank}</span>
                   <div className="min-w-0 pr-1">
                     <div className="menu-line">
                       <h3 className="font-display text-2xl leading-tight sm:text-[1.75rem]">
@@ -100,7 +100,7 @@ export default function RankingExplorer({ cafes }: { cafes: RankedCafe[] }) {
                         </Link>
                       </h3>
                       <span className="menu-leader" aria-hidden />
-                      <span className="figures text-2xl  sm:text-[1.75rem]">
+                      <span className="figures text-2xl text-pop sm:text-[1.75rem]">
                         {c.overall.toFixed(1)}
                       </span>
                     </div>

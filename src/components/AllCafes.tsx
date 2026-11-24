@@ -154,7 +154,7 @@ export default function AllCafes() {
                         </h2>
                         <span className="menu-leader" aria-hidden />
                         <span
-                          className="figures text-2xl "
+                          className="figures text-2xl text-pop"
                           title={v ? `Visitors' score from ${v.raters} ${v.raters === 1 ? "person" : "people"}` : undefined}
                         >
                           {v ? v.overall.toFixed(1) : "–"}

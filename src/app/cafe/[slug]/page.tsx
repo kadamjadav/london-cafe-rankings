@@ -44,7 +44,7 @@ export default async function CafePage({ params }: PageProps<"/cafe/[slug]">) {
             {cafe.address ?? cafe.area}. Visited {formatDate(cafe.visited)}.
           </p>
         </div>
-        <p className="figures text-7xl leading-none text-awning">
+        <p className="figures text-7xl leading-none text-pop">
           {cafe.overall.toFixed(1)}
           <span className="ml-1 font-sans text-lg text-ink-soft">/10</span>
         </p>

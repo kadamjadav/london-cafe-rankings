@@ -119,16 +119,12 @@ body {
 }
 
 /* ── Map ─────────────────────────────────────────── */
-/* Quiet the street map so the pins carry the colour. */
-.leaflet-tile-pane {
-  filter: grayscale(0.85) sepia(0.22) contrast(0.92) brightness(1.03);
-}
 .cafe-pin {
   width: 32px;
   height: 32px;
   border-radius: 9999px;
-  background: var(--color-awning);
-  color: var(--color-chalk);
+  background: var(--color-pop);
+  color: #fff;
   border: 2px solid var(--color-porcelain);
   box-shadow: 0 1px 4px rgb(36 27 22 / 0.35);
   display: flex;
@@ -139,8 +135,9 @@ body {
   transition: transform 0.15s;
 }
 .cafe-pin--active {
-  background: var(--color-pop);
+  background: var(--color-pop-deep);
   color: #fff;
+  border-color: #e3c08a;
   transform: scale(1.2);
 }
 .cafe-pin--community {

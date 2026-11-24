@@ -12,7 +12,7 @@ export default function ScoreBars({ scores }: { scores: Partial<Record<ScoreCate
             <div className="h-px w-full bg-rule">
               <div className="h-[3px] -translate-y-px bg-brass" style={{ width: `${(scores[key] ?? 0) * 10}%` }} />
             </div>
-            <span className="text-right figures text-lg ">{scores[key] ?? "–"}</span>
+            <span className="figures text-right text-lg text-pop">{scores[key] ?? "–"}</span>
           </dd>
         </div>
       ))}
@@ -26,7 +26,7 @@ export function ScoreLine({ scores }: { scores: Partial<Record<ScoreCategory, nu
     <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-soft">
       {CATEGORIES.filter(({ key }) => scores[key] !== undefined).map(({ key, label }) => (
         <span key={key}>
-          {label} <span className="font-medium text-ink tabular-nums">{scores[key]}</span>
+          {label} <span className="font-semibold text-pop tabular-nums">{scores[key]}</span>
         </span>
       ))}
     </p>

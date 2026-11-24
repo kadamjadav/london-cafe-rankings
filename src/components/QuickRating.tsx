@@ -94,7 +94,7 @@ export default function QuickRating({ cafeSlug, ownerScore }: { cafeSlug: string
               <div key={key}>
                 <dt className="text-xs text-ink-soft">{label}</dt>
                 <dd className="mt-0.5 flex items-baseline gap-1.5">
-                  <span className="figures text-xl ">{c ? c.avg.toFixed(1) : "–"}</span>
+                  <span className="figures text-xl text-pop">{c ? c.avg.toFixed(1) : "–"}</span>
                   {c && <span className="text-xs text-ink-soft">({c.n})</span>}
                 </dd>
               </div>
