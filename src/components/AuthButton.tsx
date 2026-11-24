@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { profileHref } from "./Avatar";
 import { getSupabase } from "@/lib/supabase";
 import { useUser } from "@/lib/useSession";
 
@@ -11,7 +13,6 @@ export default function AuthButton() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<string | null>(null);
   const [name, setName] = useState("");
-  const [editingName, setEditingName] = useState(false);
 
   useEffect(() => {
     if (!supabase || !user) return;
@@ -33,18 +34,6 @@ export default function AuthButton() {
       options: { emailRedirectTo: window.location.href },
     });
     setStatus(error ? error.message : "Check your inbox for a sign-in link.");
-  }
-
-  async function saveName(e: React.FormEvent) {
-    e.preventDefault();
-    const trimmed = name.trim();
-    if (trimmed.length < 2 || trimmed.length > 40) {
-      setStatus("Name must be 2–40 characters.");
-      return;
-    }
-    const { error } = await supabase!.from("profiles").update({ display_name: trimmed }).eq("id", user!.id);
-    setStatus(error ? error.message : "Saved.");
-    if (!error) setEditingName(false);
   }
 
   return (
@@ -76,25 +65,16 @@ export default function AuthButton() {
                 Email me a link
               </button>
             </form>
-          ) : editingName ? (
-            <form onSubmit={saveName} className="space-y-2">
-              <label className="block text-sm text-stone-600">
-                Public display name
-                <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  maxLength={40}
-                  className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm"
-                />
-              </label>
-              <button className="w-full rounded-lg bg-stone-900 px-3 py-2 text-sm font-medium text-white">Save</button>
-            </form>
           ) : (
             <div className="space-y-2 text-sm">
               <p className="truncate text-stone-500">{user.email}</p>
-              <button onClick={() => setEditingName(true)} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-stone-100">
-                Change display name
-              </button>
+              <Link
+                href={profileHref(user.id)}
+                onClick={() => setOpen(false)}
+                className="block w-full rounded-lg px-3 py-2 text-left hover:bg-stone-100"
+              >
+                My profile
+              </Link>
               <button
                 onClick={() => supabase.auth.signOut().then(() => setOpen(false))}
                 className="block w-full rounded-lg px-3 py-2 text-left hover:bg-stone-100"

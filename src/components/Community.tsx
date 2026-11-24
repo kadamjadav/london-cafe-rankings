@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { getSupabase, photoUrl, PHOTO_BUCKET } from "@/lib/supabase";
 import { useUser } from "@/lib/useSession";
 import { ImageError, sanitiseImage } from "@/lib/image";
+import Link from "next/link";
+import Avatar, { profileHref } from "./Avatar";
 
 type Profile = { display_name: string } | null;
 
@@ -32,7 +34,7 @@ type Review = {
 const REVIEW_SELECT =
   "id, user_id, rating, body, photo_path, created_at, profiles!reviews_user_id_fkey(display_name), review_likes(user_id), comments(id, body, created_at, user_id, profiles!comments_user_id_fkey(display_name))";
 
-function timeAgo(iso: string) {
+export function timeAgo(iso: string) {
   const s = (Date.now() - new Date(iso).getTime()) / 1000;
   if (s < 60) return "just now";
   if (s < 3600) return `${Math.floor(s / 60)}m ago`;
@@ -41,7 +43,7 @@ function timeAgo(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
-function Stars({ value }: { value: number }) {
+export function Stars({ value }: { value: number }) {
   return (
     <span className="text-amber-600" aria-label={`${value} out of 5`}>
       {"★".repeat(value)}
@@ -49,6 +51,18 @@ function Stars({ value }: { value: number }) {
     </span>
   );
 }
+
+function PersonLink({ id, profile, size = 28 }: { id: string; profile: Profile; size?: number }) {
+  const name = profile?.display_name ?? "Someone";
+  return (
+    <Link href={profileHref(id)} className="inline-flex items-center gap-2 font-medium hover:underline">
+      <Avatar name={name} id={id} size={size} />
+      {name}
+    </Link>
+  );
+}
+
+const COMMENTS_PREVIEW = 2;
 
 export default function Community({ cafeSlug }: { cafeSlug: string }) {
   const supabase = getSupabase();
@@ -249,7 +263,7 @@ function ReviewCard({
   onChange: () => void;
 }) {
   const supabase = getSupabase()!;
-  const [showComments, setShowComments] = useState(false);
+  const [showAllComments, setShowAllComments] = useState(false);
   const [comment, setComment] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
   const liked = !!userId && review.review_likes.some((l) => l.user_id === userId);
@@ -294,10 +308,12 @@ function ReviewCard({
   return (
     <li className="rounded-2xl border border-stone-200 bg-white p-4">
       <div className="flex items-baseline justify-between gap-3">
-        <p className="font-medium">{review.profiles?.display_name ?? "Someone"}</p>
+        <PersonLink id={review.user_id} profile={review.profiles} />
         <p className="text-xs text-stone-400">{timeAgo(review.created_at)}</p>
       </div>
-      <Stars value={review.rating} />
+      <div className="mt-1">
+        <Stars value={review.rating} />
+      </div>
       <p className="mt-2 whitespace-pre-line text-sm text-stone-700">{review.body}</p>
       {review.photo_path && (
         // eslint-disable-next-line @next/next/no-img-element
@@ -313,9 +329,7 @@ function ReviewCard({
         <button onClick={toggleLike} className={liked ? "font-medium text-amber-800" : "text-stone-500 hover:text-stone-800"}>
           {liked ? "♥" : "♡"} {review.review_likes.length}
         </button>
-        <button onClick={() => setShowComments((s) => !s)} className="text-stone-500 hover:text-stone-800">
-          💬 {review.comments.length}
-        </button>
+        <span className="text-stone-500">💬 {review.comments.length}</span>
         {userId && !isOwner && <ReportButton type="review" id={review.id} />}
         {(isOwner || isAdmin) && (
           <button onClick={deleteReview} className="text-red-700 hover:underline">
@@ -325,37 +339,50 @@ function ReviewCard({
       </div>
       {msg && <p className="mt-2 text-xs text-red-700">{msg}</p>}
 
-      {showComments && (
-        <div className="mt-3 space-y-2 border-t border-stone-100 pt-3">
-          {comments.map((c) => (
-            <div key={c.id} className="text-sm">
-              <span className="font-medium">{c.profiles?.display_name ?? "Someone"}</span>{" "}
-              <span className="text-stone-700">{c.body}</span>{" "}
-              <span className="text-xs text-stone-400">{timeAgo(c.created_at)}</span>
-              {(c.user_id === userId || isAdmin) && (
-                <button onClick={() => deleteComment(c.id)} className="ml-2 text-xs text-red-700 hover:underline">
-                  delete
-                </button>
-              )}
-              {userId && c.user_id !== userId && <span className="ml-2"><ReportButton type="comment" id={c.id} small /></span>}
+      {/* Comments are always visible (latest few) so visitors can see the conversation without hunting for it. */}
+      <div className="mt-3 space-y-2 border-t border-stone-100 pt-3">
+        {comments.length > COMMENTS_PREVIEW && !showAllComments && (
+          <button onClick={() => setShowAllComments(true)} className="text-xs font-medium text-stone-500 hover:text-stone-800">
+            View all {comments.length} comments
+          </button>
+        )}
+        {(showAllComments ? comments : comments.slice(-COMMENTS_PREVIEW)).map((c) => (
+          <div key={c.id} className="flex items-start gap-2 text-sm">
+            <Link href={profileHref(c.user_id)} className="mt-0.5">
+              <Avatar name={c.profiles?.display_name ?? "?"} id={c.user_id} size={22} />
+            </Link>
+            <div className="min-w-0 flex-1">
+              <Link href={profileHref(c.user_id)} className="font-medium hover:underline">
+                {c.profiles?.display_name ?? "Someone"}
+              </Link>{" "}
+              <span className="whitespace-pre-line text-stone-700">{c.body}</span>
+              <div className="mt-0.5 flex items-center gap-3 text-xs text-stone-400">
+                {timeAgo(c.created_at)}
+                {(c.user_id === userId || isAdmin) && (
+                  <button onClick={() => deleteComment(c.id)} className="text-red-700 hover:underline">
+                    delete
+                  </button>
+                )}
+                {userId && c.user_id !== userId && <ReportButton type="comment" id={c.id} small />}
+              </div>
             </div>
-          ))}
-          {userId ? (
-            <form onSubmit={addComment} className="flex gap-2">
-              <input
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                maxLength={1000}
-                placeholder="Add a comment…"
-                className="min-w-0 flex-1 rounded-lg border border-stone-300 px-3 py-1.5 text-sm"
-              />
-              <button className="rounded-lg bg-stone-900 px-3 py-1.5 text-sm text-white">Post</button>
-            </form>
-          ) : (
-            <p className="text-xs text-stone-500">Sign in to comment.</p>
-          )}
-        </div>
-      )}
+          </div>
+        ))}
+        {userId ? (
+          <form onSubmit={addComment} className="flex gap-2">
+            <input
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              maxLength={1000}
+              placeholder={comments.length ? "Reply to this review…" : "Be the first to comment…"}
+              className="min-w-0 flex-1 rounded-lg border border-stone-300 px-3 py-1.5 text-sm"
+            />
+            <button className="rounded-lg bg-stone-900 px-3 py-1.5 text-sm text-white">Post</button>
+          </form>
+        ) : (
+          <p className="text-xs text-stone-500">Sign in to join the conversation.</p>
+        )}
+      </div>
     </li>
   );
 }

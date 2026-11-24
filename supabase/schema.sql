@@ -10,6 +10,8 @@ create table if not exists public.profiles (
   display_name text not null check (char_length(display_name) between 2 and 40),
   created_at timestamptz not null default now()
 );
+-- Short public bio shown on the profile page (added later; safe to re-run).
+alter table public.profiles add column if not exists bio text check (bio is null or char_length(bio) <= 280);
 
 -- Create a profile automatically when someone signs up.
 create or replace function public.handle_new_user()
@@ -93,7 +95,7 @@ create table if not exists public.reports (
 -- exactly what the site needs. RLS policies below still decide which ROWS each user can touch.
 grant usage on schema public to anon, authenticated;
 grant select on public.profiles, public.reviews, public.review_likes, public.comments to anon, authenticated;
-grant update (display_name) on public.profiles to authenticated;
+grant update (display_name, bio) on public.profiles to authenticated;
 grant insert, update, delete on public.reviews to authenticated;
 grant insert, delete on public.review_likes to authenticated;
 grant insert, delete on public.comments to authenticated;
@@ -182,6 +184,10 @@ create policy "photos own upload" on storage.objects for insert to authenticated
     bucket_id = 'review-photos'
     and (storage.foldername(name))[1] = auth.uid()::text
   );
+-- Storage's delete API looks the object up first, so deleting also needs a read policy.
+drop policy if exists "photos readable" on storage.objects;
+create policy "photos readable" on storage.objects for select
+  using (bucket_id = 'review-photos');
 drop policy if exists "photos owner or admin delete" on storage.objects;
 create policy "photos owner or admin delete" on storage.objects for delete to authenticated
   using (
