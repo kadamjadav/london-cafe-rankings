@@ -27,8 +27,10 @@ type Review = {
   comments: Comment[];
 };
 
+// Foreign keys are named explicitly: reviews and profiles are ALSO linked through review_likes,
+// so a bare `profiles(...)` embed is ambiguous to the API.
 const REVIEW_SELECT =
-  "id, user_id, rating, body, photo_path, created_at, profiles(display_name), review_likes(user_id), comments(id, body, created_at, user_id, profiles(display_name))";
+  "id, user_id, rating, body, photo_path, created_at, profiles!reviews_user_id_fkey(display_name), review_likes(user_id), comments(id, body, created_at, user_id, profiles!comments_user_id_fkey(display_name))";
 
 function timeAgo(iso: string) {
   const s = (Date.now() - new Date(iso).getTime()) / 1000;
